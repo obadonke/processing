@@ -29,13 +29,6 @@ void transformView()
 
   float rotation = state.GetRotation();
   rotate(rotation);
-
-  if (state.IsRotateInteractive())
-  {
-      float extraRotation = state.CalculateDragRotation();
-      PVector midScreenOffset = state.CalculateDragRotationOffset(extraRotation);
-      translate(midScreenOffset.x, midScreenOffset.y);
-  }
   
   scale(state.zoom);
 }
@@ -106,7 +99,7 @@ enum ViewMode
   PVector lastMouse = new PVector(0, 0);
   PVector velocity = new PVector(0, 0);
   PVector easeVelocity = new PVector(0, 0);
-  float rotation = QUARTER_PI;
+  float rotation = 0;
 
   PVector ViewToModelCoord(float x, float y) {
     PVector result = new PVector(x,y);
@@ -206,6 +199,12 @@ enum ViewMode
       currentTranslation.x += mouseX-state.clickMouseX;
       currentTranslation.y += mouseY-state.clickMouseY;
     }
+    if (IsRotateInteractive())
+    {
+      float extraRotation = CalculateDragRotation();
+      PVector extraTranslation = CalculateDragRotationOffset(extraRotation);
+      currentTranslation.sub(extraTranslation);
+    }
     return currentTranslation;
   }
 
@@ -232,8 +231,8 @@ enum ViewMode
 
   PVector CalculateDragRotationOffset(float extraRotation) {
       PVector result = state.ViewToModelCoord(width/2, height/2);
-      result.rotate(-extraRotation);
-      result = state.ModelToViewCoord(result.x, result.y);
+      float newRotation = rotation+extraRotation;
+      result = state.ModelToViewCoord(result,translation,newRotation,zoom);
       result.sub(width/2, height/2);
       return result;
   }
@@ -273,7 +272,7 @@ enum ViewMode
     } else if (IsRotateInteractive())
     {
       float extraRotation = CalculateDragRotation();
-      //translation.add(CalculateDragRotationOffset(extraRotation));
+      translation.sub(CalculateDragRotationOffset(extraRotation));
       rotation += extraRotation;
       mode = ViewMode.IDLE;
     }
@@ -290,7 +289,6 @@ enum ViewMode
   }
 
   void AdjustTranslationForZoomChange(float zoomFactor) {
-    // adjust translation to compensate.
     float ax = (mouseX-translation.x)*(1-zoomFactor);
     float ay = (mouseY-translation.y)*(1-zoomFactor);
     translation.add(ax, ay);
