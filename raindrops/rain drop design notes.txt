@@ -1,0 +1,7 @@
+rain drop obstacles.
+
+Only one at a time.
+If the first time a rain drop encounters an obstacle it is already inside it, it ignores the obstacle.
+the drop has to be about to cross the boundary of an obstacle for it to count. It then keeps a reference to the obstacle until it's passed it.
+
+to stay relatively encapsulated, only interaction should be to know if boundary crossed and what angle of incidence to the tangent is.
