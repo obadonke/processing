@@ -220,15 +220,14 @@ enum ViewMode
   float CalculateDragRotation() {
     int midScreenX = width/2;
     int midScreenY = height/2;
-    int startDeltaX = clickMouseX - midScreenX;
-    int startDeltaY = clickMouseY - midScreenY;
-    int deltaX = mouseX - midScreenX;
-    int deltaY = mouseY - midScreenY;
-    float startDeltaR = atan((float)startDeltaY/startDeltaX);
-    float deltaR = atan((float)deltaY/deltaX);
-    return deltaR-startDeltaR;
+    PVector startDelta = new PVector(clickMouseX - midScreenX, clickMouseY - midScreenY);
+    PVector currentDelta = new PVector(mouseX - midScreenX, mouseY - midScreenY);
+    
+    float startDeltaR = atan2(startDelta.y,startDelta.x);
+    float deltaR = atan2(currentDelta.y, currentDelta.x);
+    return deltaR - startDeltaR;
   }
-
+  
   PVector CalculateDragRotationOffset(float extraRotation) {
       PVector result = state.ViewToModelCoord(width/2, height/2);
       float newRotation = rotation+extraRotation;
