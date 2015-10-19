@@ -10,22 +10,10 @@ void setup()
 void draw()
 {
   controller.HandleUserInput();
+  controller.TransformView();
 
-  transformView();
   background(80);
   drawStaticSketch();
-}
-
-void transformView()
-{
-
-  PVector translation = controller.GetTranslation();
-  translate(translation.x, translation.y);
-
-  float rotation = controller.GetRotation();
-  rotate(rotation);
-
-  scale(controller.zoom);
 }
 
 void drawStaticSketch()
@@ -95,6 +83,17 @@ enum ViewMode
   PVector velocity = new PVector(0, 0);
   PVector easeVelocity = new PVector(0, 0);
   float rotation = 0;
+
+  void TransformView()
+  {
+    PVector translation = controller.GetTranslation();
+    translate(translation.x, translation.y);
+
+    float rotation = controller.GetRotation();
+    rotate(rotation);
+
+    scale(controller.zoom);
+  }
 
   PVector ViewToModelCoord(float x, float y) {
     PVector result = new PVector(x, y);
