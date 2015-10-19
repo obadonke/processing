@@ -154,7 +154,6 @@ class ViewController {
 
   void StartEasing() {
     easeVelocity = velocity.copy();
-    if (easeVelocity.x < 0 || easeVelocity.y < 0) println("This one! " + easeVelocity.x + "," + easeVelocity.y);
     mode = ViewMode.EASING;
   }
 
