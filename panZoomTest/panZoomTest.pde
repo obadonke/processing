@@ -1,15 +1,15 @@
-ViewState state;
+ViewController controller;
 
 void setup()
 {
   size(600, 600);
-  state = new ViewState();
+  controller = new ViewController();
   frameRate(60);
 }
 
 void draw()
 {
-  state.HandleUserInput();
+  controller.HandleUserInput();
 
   transformView();
   background(80);
@@ -19,13 +19,13 @@ void draw()
 void transformView()
 {
 
-  PVector translation = state.GetTranslation();
+  PVector translation = controller.GetTranslation();
   translate(translation.x, translation.y);
 
-  float rotation = state.GetRotation();
+  float rotation = controller.GetRotation();
   rotate(rotation);
 
-  scale(state.zoom);
+  scale(controller.zoom);
 }
 
 void drawStaticSketch()
@@ -46,18 +46,18 @@ void drawStaticSketch()
 
 void mouseWheel(MouseEvent event)
 {
-  state.StepZoom(event.getCount());
+  controller.StepZoom(event.getCount());
 }
 
 void mousePressed()
 {
-  PVector coord = state.ViewToModelCoord(mouseX, mouseY);
+  PVector coord = controller.ViewToModelCoord(mouseX, mouseY);
   println("Mouse: ", mouseX, ",", mouseY);
-  print("Zoom: ", state.zoom);
-  print(" Rot: ", degrees(state.rotation));
-  println(" Tran: ", state.translation);
+  print("Zoom: ", controller.zoom);
+  print(" Rot: ", degrees(controller.rotation));
+  println(" Tran: ", controller.translation);
   println("Co-ord is: ", coord);
-  coord = state.ModelToViewCoord(coord.x, coord.y);
+  coord = controller.ModelToViewCoord(coord.x, coord.y);
   println("Reverse is: ", coord);
   if (abs(coord.x-mouseX) > 1 || abs(coord.y-mouseY) > 1) {
     println("Comparison not so good. :O");
@@ -79,7 +79,7 @@ enum ViewMode
     ROTATE
 }
 
-  class ViewState 
+  class ViewController 
 {
   float EASE_FACTOR = 0.85;
   float ZOOM_STEP = 1.1;
@@ -130,20 +130,20 @@ enum ViewMode
   }
 
   void HandleUserInput() {
-    if (state.mode == ViewMode.DRAGGING) {
+    if (controller.mode == ViewMode.DRAGGING) {
       if (!mousePressed) {
-        state.MouseReleased();
+        controller.MouseReleased();
       }
-    } else if (state.mode == ViewMode.EASING) {
+    } else if (controller.mode == ViewMode.EASING) {
       if (mousePressed) {
-        state.StopEasing();
-        state.StartDrag();
+        controller.StopEasing();
+        controller.StartDrag();
       } else {
-        state.ApplyEasing();
+        controller.ApplyEasing();
       }
-    } else if (state.mode == ViewMode.IDLE) {
+    } else if (controller.mode == ViewMode.IDLE) {
       if (mousePressed) {
-        state.StartDrag();
+        controller.StartDrag();
       }
     }
 
@@ -191,8 +191,8 @@ enum ViewMode
     PVector currentTranslation = translation.copy();
     if (IsPanInteractive()) 
     {
-      currentTranslation.x += mouseX-state.clickMouseX;
-      currentTranslation.y += mouseY-state.clickMouseY;
+      currentTranslation.x += mouseX-controller.clickMouseX;
+      currentTranslation.y += mouseY-controller.clickMouseY;
     }
     if (IsRotateInteractive())
     {
@@ -224,9 +224,9 @@ enum ViewMode
   }
 
   PVector CalculateDragRotationOffset(float extraRotation) {
-    PVector result = state.ViewToModelCoord(width/2, height/2);
+    PVector result = controller.ViewToModelCoord(width/2, height/2);
     float newRotation = rotation+extraRotation;
-    result = state.ModelToViewCoord(result, translation, newRotation, zoom);
+    result = controller.ModelToViewCoord(result, translation, newRotation, zoom);
     result.sub(width/2, height/2);
     return result;
   }
@@ -243,11 +243,11 @@ enum ViewMode
       dragOp = DragOperation.NONE;
     }
 
-    state.clickMouseX = mouseX;
-    state.clickMouseY = mouseY;
+    controller.clickMouseX = mouseX;
+    controller.clickMouseY = mouseY;
 
     if (dragOp != DragOperation.NONE) {
-      state.mode = ViewMode.DRAGGING;
+      controller.mode = ViewMode.DRAGGING;
     }
   }
 
