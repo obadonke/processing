@@ -1,14 +1,12 @@
 ViewController controller;
 
-void setup()
-{
+void setup() {
   size(600, 600);
   controller = new ViewController();
   frameRate(60);
 }
 
-void draw()
-{
+void draw() {
   controller.HandleUserInput();
   controller.TransformView();
 
@@ -16,8 +14,7 @@ void draw()
   drawStaticSketch();
 }
 
-void drawStaticSketch()
-{
+void drawStaticSketch() {
   fill(0, 250, 250);
   stroke(255, 0, 0);
   rect(50, 50, 100, 100);
@@ -32,13 +29,11 @@ void drawStaticSketch()
   }
 }
 
-void mouseWheel(MouseEvent event)
-{
+void mouseWheel(MouseEvent event) {
   controller.StepZoom(event.getCount());
 }
 
-void mousePressed()
-{
+void mousePressed() {
   PVector coord = controller.ViewToModelCoord(mouseX, mouseY);
   println("Mouse: ", mouseX, ",", mouseY);
   print("Zoom: ", controller.zoom);
@@ -52,23 +47,21 @@ void mousePressed()
   }
 }
 
-enum ViewMode
-{
+enum ViewMode {
   IDLE, 
-    DRAGGING, 
-    EASING
+  DRAGGING, 
+  EASING
 }
 
-  enum DragOperation
-{
+enum DragOperation {
   NONE, 
-    PAN, 
-    ZOOM, 
-    ROTATE
+  PAN, 
+  ZOOM, 
+  ROTATE
 }
 
-  class ViewController 
-{
+class ViewController {
+
   float EASE_FACTOR = 0.85;
   float ZOOM_STEP = 1.1;
 
