@@ -82,10 +82,10 @@ class ViewController {
   
   void TransformView()
   {
-    PVector translation = CalcActiveTranslation();
+    PVector translation = CalculateActiveTranslation();
     translate(translation.x, translation.y);
 
-    float rotation = controller.CalcActiveRotation();
+    float rotation = controller.CalculateActiveRotation();
     rotate(rotation);
 
     scale(controller.zoom);
@@ -181,7 +181,7 @@ class ViewController {
     mode = ViewMode.IDLE;
   }
 
-  PVector CalcActiveTranslation() {
+  PVector CalculateActiveTranslation() {
     PVector translation = baseTranslation.copy();
     if (IsPanInteractive()) 
     {
@@ -190,23 +190,23 @@ class ViewController {
     }
     if (IsRotateInteractive())
     {
-      float extraRotation = CalculateDragRotation();
-      PVector extraTranslation = CalculateDragRotationOffset(extraRotation);
+      float extraRotation = CalculateDragRotationDelta();
+      PVector extraTranslation = CalculateRotationTranslationOffset(extraRotation);
       translation.sub(extraTranslation);
     }
     return translation;
   }
 
-  float CalcActiveRotation() {
+  float CalculateActiveRotation() {
     float rotation = baseRotation;
     if (IsRotateInteractive())
     {
-      rotation += CalculateDragRotation();
+      rotation += CalculateDragRotationDelta();
     }
     return rotation;
   }
 
-  float CalculateDragRotation() {
+  float CalculateDragRotationDelta() {
     int midScreenX = width/2;
     int midScreenY = height/2;
     PVector startDelta = new PVector(clickMouseX - midScreenX, clickMouseY - midScreenY);
@@ -217,10 +217,10 @@ class ViewController {
     return deltaR - startDeltaR;
   }
 
-  PVector CalculateDragRotationOffset(float extraRotation) {
-    PVector result = controller.ViewToModelCoord(width/2, height/2);
+  PVector CalculateRotationTranslationOffset(float extraRotation) {
+    PVector result = ViewToModelCoord(width/2, height/2);
     float newRotation = baseRotation+extraRotation;
-    result = controller.ModelToViewCoord(result, baseTranslation, newRotation, zoom);
+    result = ModelToViewCoord(result, baseTranslation, newRotation, zoom);
     result.sub(width/2, height/2);
     return result;
   }
@@ -259,9 +259,8 @@ class ViewController {
       }
     } else if (IsRotateInteractive())
     {
-      float extraRotation = CalculateDragRotation();
-      baseTranslation.sub(CalculateDragRotationOffset(extraRotation));
-      baseRotation += extraRotation;
+      float extraRotation = CalculateDragRotationDelta();
+      ApplyRotationDeltaToBase(extraRotation);
       mode = ViewMode.IDLE;
     }
     dragOp = DragOperation.NONE;
@@ -276,6 +275,11 @@ class ViewController {
     }
   }
 
+  void ApplyRotationDeltaToBase(float rotationDelta) {
+      baseTranslation.sub(CalculateRotationTranslationOffset(rotationDelta));
+      baseRotation += rotationDelta;
+  }
+  
   void AdjustTranslationForZoomChange(float zoomFactor) {
     float ax = (mouseX-baseTranslation.x)*(1-zoomFactor);
     float ay = (mouseY-baseTranslation.y)*(1-zoomFactor);
