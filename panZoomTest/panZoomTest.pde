@@ -85,10 +85,10 @@ class ViewController {
     PVector translation = CalculateActiveTranslation();
     translate(translation.x, translation.y);
 
-    float rotation = controller.CalculateActiveRotation();
+    float rotation = CalculateActiveRotation();
     rotate(rotation);
 
-    scale(controller.zoom);
+    scale(zoom);
   }
 
   PVector ViewToModelCoord(float x, float y) {
@@ -217,9 +217,9 @@ class ViewController {
     return deltaR - startDeltaR;
   }
 
-  PVector CalculateRotationTranslationOffset(float extraRotation) {
+  PVector CalculateRotationTranslationOffset(float rotationDelta) {
     PVector result = ViewToModelCoord(width/2, height/2);
-    float newRotation = baseRotation+extraRotation;
+    float newRotation = baseRotation+rotationDelta;
     result = ModelToViewCoord(result, baseTranslation, newRotation, zoom);
     result.sub(width/2, height/2);
     return result;
