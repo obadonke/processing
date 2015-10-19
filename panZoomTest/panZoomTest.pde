@@ -7,8 +7,7 @@ void setup() {
 }
 
 void draw() {
-  controller.HandleUserInput();
-  controller.TransformView();
+  controller.HandleUserNavigation();
 
   background(80);
   drawStaticSketch();
@@ -37,8 +36,8 @@ void mousePressed() {
   PVector coord = controller.ViewToModelCoord(mouseX, mouseY);
   println("Mouse: ", mouseX, ",", mouseY);
   print("Zoom: ", controller.zoom);
-  print(" Rot: ", degrees(controller.rotation));
-  println(" Tran: ", controller.translation);
+  print(" Rot: ", degrees(controller.baseRotation));
+  println(" Tran: ", controller.baseTranslation);
   println("Co-ord is: ", coord);
   coord = controller.ModelToViewCoord(coord.x, coord.y);
   println("Reverse is: ", coord);
@@ -61,7 +60,6 @@ enum DragOperation {
 }
 
 class ViewController {
-
   float EASE_FACTOR = 0.85;
   float ZOOM_STEP = 1.1;
 
@@ -71,18 +69,23 @@ class ViewController {
   ViewMode mode = ViewMode.IDLE;
   DragOperation dragOp = DragOperation.NONE;
 
-  PVector translation = new PVector(0, 0);
+  PVector baseTranslation = new PVector(0, 0);
   PVector lastMouse = new PVector(0, 0);
   PVector velocity = new PVector(0, 0);
   PVector easeVelocity = new PVector(0, 0);
-  float rotation = 0;
+  float baseRotation = 0;
 
+  void HandleUserNavigation() {
+    HandleUserInput();
+    TransformView();
+  }
+  
   void TransformView()
   {
-    PVector translation = controller.GetTranslation();
+    PVector translation = CalcActiveTranslation();
     translate(translation.x, translation.y);
 
-    float rotation = controller.GetRotation();
+    float rotation = controller.CalcActiveRotation();
     rotate(rotation);
 
     scale(controller.zoom);
@@ -90,8 +93,8 @@ class ViewController {
 
   PVector ViewToModelCoord(float x, float y) {
     PVector result = new PVector(x, y);
-    result.sub(translation);
-    result.rotate(-rotation);
+    result.sub(baseTranslation);
+    result.rotate(-baseRotation);
     result.mult(1.0/zoom);
     return result;
   }
@@ -99,8 +102,8 @@ class ViewController {
   PVector ModelToViewCoord(float x, float y) {
     PVector result = new PVector(x, y);
     result.mult(zoom);
-    result.rotate(rotation);
-    result.add(translation);
+    result.rotate(baseRotation);
+    result.add(baseTranslation);
     return result;
   }
 
@@ -122,20 +125,20 @@ class ViewController {
   }
 
   void HandleUserInput() {
-    if (controller.mode == ViewMode.DRAGGING) {
+    if (mode == ViewMode.DRAGGING) {
       if (!mousePressed) {
-        controller.MouseReleased();
+        MouseReleased();
       }
     } else if (controller.mode == ViewMode.EASING) {
       if (mousePressed) {
-        controller.StopEasing();
-        controller.StartDrag();
+        StopEasing();
+        StartDrag();
       } else {
-        controller.ApplyEasing();
+        ApplyEasing();
       }
     } else if (controller.mode == ViewMode.IDLE) {
       if (mousePressed) {
-        controller.StartDrag();
+        StartDrag();
       }
     }
 
@@ -163,8 +166,8 @@ class ViewController {
       return;
     }
 
-    translation.x += easeVelocity.x;
-    translation.y += easeVelocity.y;
+    baseTranslation.x += easeVelocity.x;
+    baseTranslation.y += easeVelocity.y;
     easeVelocity.mult(EASE_FACTOR);
     if (easeVelocity.mag() < 1) 
     {
@@ -178,29 +181,29 @@ class ViewController {
     mode = ViewMode.IDLE;
   }
 
-  PVector GetTranslation() {
-    PVector currentTranslation = translation.copy();
+  PVector CalcActiveTranslation() {
+    PVector translation = baseTranslation.copy();
     if (IsPanInteractive()) 
     {
-      currentTranslation.x += mouseX-controller.clickMouseX;
-      currentTranslation.y += mouseY-controller.clickMouseY;
+      translation.x += mouseX-clickMouseX;
+      translation.y += mouseY-clickMouseY;
     }
     if (IsRotateInteractive())
     {
       float extraRotation = CalculateDragRotation();
       PVector extraTranslation = CalculateDragRotationOffset(extraRotation);
-      currentTranslation.sub(extraTranslation);
+      translation.sub(extraTranslation);
     }
-    return currentTranslation;
+    return translation;
   }
 
-  float GetRotation() {
-    float currentRotation = rotation;
+  float CalcActiveRotation() {
+    float rotation = baseRotation;
     if (IsRotateInteractive())
     {
-      currentRotation += CalculateDragRotation();
+      rotation += CalculateDragRotation();
     }
-    return currentRotation;
+    return rotation;
   }
 
   float CalculateDragRotation() {
@@ -216,8 +219,8 @@ class ViewController {
 
   PVector CalculateDragRotationOffset(float extraRotation) {
     PVector result = controller.ViewToModelCoord(width/2, height/2);
-    float newRotation = rotation+extraRotation;
-    result = controller.ModelToViewCoord(result, translation, newRotation, zoom);
+    float newRotation = baseRotation+extraRotation;
+    result = controller.ModelToViewCoord(result, baseTranslation, newRotation, zoom);
     result.sub(width/2, height/2);
     return result;
   }
@@ -234,8 +237,8 @@ class ViewController {
       dragOp = DragOperation.NONE;
     }
 
-    controller.clickMouseX = mouseX;
-    controller.clickMouseY = mouseY;
+    clickMouseX = mouseX;
+    clickMouseY = mouseY;
 
     if (dragOp != DragOperation.NONE) {
       controller.mode = ViewMode.DRAGGING;
@@ -245,8 +248,8 @@ class ViewController {
   void StopDrag() {
     if (IsPanInteractive())
     {
-      translation.x += mouseX-clickMouseX;
-      translation.y += mouseY-clickMouseY; 
+      baseTranslation.x += mouseX-clickMouseX;
+      baseTranslation.y += mouseY-clickMouseY; 
       if (velocity.mag() > 1)
       {
         StartEasing();
@@ -257,8 +260,8 @@ class ViewController {
     } else if (IsRotateInteractive())
     {
       float extraRotation = CalculateDragRotation();
-      translation.sub(CalculateDragRotationOffset(extraRotation));
-      rotation += extraRotation;
+      baseTranslation.sub(CalculateDragRotationOffset(extraRotation));
+      baseRotation += extraRotation;
       mode = ViewMode.IDLE;
     }
     dragOp = DragOperation.NONE;
@@ -274,8 +277,8 @@ class ViewController {
   }
 
   void AdjustTranslationForZoomChange(float zoomFactor) {
-    float ax = (mouseX-translation.x)*(1-zoomFactor);
-    float ay = (mouseY-translation.y)*(1-zoomFactor);
-    translation.add(ax, ay);
+    float ax = (mouseX-baseTranslation.x)*(1-zoomFactor);
+    float ay = (mouseY-baseTranslation.y)*(1-zoomFactor);
+    baseTranslation.add(ax, ay);
   }
 }
