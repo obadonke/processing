@@ -1,10 +1,5 @@
 ViewState state;
 
-// Issues:
-//  * Moving mouse across Y axis flips the rotation 180 degrees
-//  * After one rotation, translation applies incorrect offset for every move.
-//  * After one rotation, scale centering no longer works. maybe algebra won't come to the rescue after all :P
-
 void setup()
 {
   size(600, 600);
@@ -29,7 +24,7 @@ void transformView()
 
   float rotation = state.GetRotation();
   rotate(rotation);
-  
+
   scale(state.zoom);
 }
 
@@ -57,13 +52,13 @@ void mouseWheel(MouseEvent event)
 void mousePressed()
 {
   PVector coord = state.ViewToModelCoord(mouseX, mouseY);
-  println("Mouse: ",mouseX,",",mouseY);
+  println("Mouse: ", mouseX, ",", mouseY);
   print("Zoom: ", state.zoom);
   print(" Rot: ", degrees(state.rotation));
   println(" Tran: ", state.translation);
   println("Co-ord is: ", coord);
-  coord = state.ModelToViewCoord(coord.x,coord.y);
-  println("Reverse is: ",coord);
+  coord = state.ModelToViewCoord(coord.x, coord.y);
+  println("Reverse is: ", coord);
   if (abs(coord.x-mouseX) > 1 || abs(coord.y-mouseY) > 1) {
     println("Comparison not so good. :O");
   }
@@ -102,7 +97,7 @@ enum ViewMode
   float rotation = 0;
 
   PVector ViewToModelCoord(float x, float y) {
-    PVector result = new PVector(x,y);
+    PVector result = new PVector(x, y);
     result.sub(translation);
     result.rotate(-rotation);
     result.mult(1.0/zoom);
@@ -110,13 +105,13 @@ enum ViewMode
   }
 
   PVector ModelToViewCoord(float x, float y) {
-    PVector result = new PVector(x,y);
+    PVector result = new PVector(x, y);
     result.mult(zoom);
     result.rotate(rotation);
     result.add(translation);
     return result;
   }
-  
+
   PVector ModelToViewCoord(PVector p, PVector trans, float rot, float zoom)
   {
     PVector result = p.copy();
@@ -125,7 +120,7 @@ enum ViewMode
     result.add(trans);
     return result;
   }
-  
+
   boolean IsRotateInteractive() {
     return mode == ViewMode.DRAGGING && dragOp == DragOperation.ROTATE;
   }
@@ -222,20 +217,20 @@ enum ViewMode
     int midScreenY = height/2;
     PVector startDelta = new PVector(clickMouseX - midScreenX, clickMouseY - midScreenY);
     PVector currentDelta = new PVector(mouseX - midScreenX, mouseY - midScreenY);
-    
-    float startDeltaR = atan2(startDelta.y,startDelta.x);
+
+    float startDeltaR = atan2(startDelta.y, startDelta.x);
     float deltaR = atan2(currentDelta.y, currentDelta.x);
     return deltaR - startDeltaR;
   }
-  
+
   PVector CalculateDragRotationOffset(float extraRotation) {
-      PVector result = state.ViewToModelCoord(width/2, height/2);
-      float newRotation = rotation+extraRotation;
-      result = state.ModelToViewCoord(result,translation,newRotation,zoom);
-      result.sub(width/2, height/2);
-      return result;
+    PVector result = state.ViewToModelCoord(width/2, height/2);
+    float newRotation = rotation+extraRotation;
+    result = state.ModelToViewCoord(result, translation, newRotation, zoom);
+    result.sub(width/2, height/2);
+    return result;
   }
-  
+
   void StartDrag() {
     switch (mouseButton) {
     case LEFT:
