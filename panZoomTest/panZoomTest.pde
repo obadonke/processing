@@ -83,18 +83,15 @@ class ViewController {
 
   void HandleUserNavigation() {
     HandleUserInput();
-    TransformView();
+    TripleTransform activeTransforms = CalculateActiveTransforms();
+    TransformView(activeTransforms);
   }
   
-  void TransformView()
+  void TransformView(TripleTransform transforms)
   {
-    PVector translation = CalculateActiveTranslation();
-    translate(translation.x, translation.y);
-
-    float rotation = CalculateActiveRotation();
-    rotate(rotation);
-
-    scale(zoom);
+    translate(transforms.translation.x, transforms.translation.y);
+    rotate(transforms.rotation);
+    scale(transforms.scale);
   }
 
   PVector ViewToModelCoord(float x, float y) {
@@ -187,29 +184,33 @@ class ViewController {
     mode = ViewMode.IDLE;
   }
 
-  PVector CalculateActiveTranslation() {
+  TripleTransform CalculateActiveTransforms() {
+    float rotationDelta = 0;
+    float rotation = base.rotation;
+    if (IsRotateInteractive())
+    {
+      rotationDelta = CalculateDragRotationDelta();
+      rotation += rotationDelta;
+    }
+
     PVector translation = base.translation.copy();
     if (IsPanInteractive()) 
     {
       translation.x += mouseX-clickMouseX;
       translation.y += mouseY-clickMouseY;
     }
-    if (IsRotateInteractive())
+    if (rotationDelta != 0)
     {
-      float extraRotation = CalculateDragRotationDelta();
-      PVector extraTranslation = CalculateRotationTranslationOffset(extraRotation);
-      translation.sub(extraTranslation);
+      PVector translationRotOffset = CalculateRotationTranslationOffset(rotationDelta);
+      translation.sub(translationRotOffset);
     }
-    return translation;
-  }
 
-  float CalculateActiveRotation() {
-    float rotation = base.rotation;
-    if (IsRotateInteractive())
-    {
-      rotation += CalculateDragRotationDelta();
-    }
-    return rotation;
+    TripleTransform result = new TripleTransform();
+    result.translation = translation;
+    result.rotation = rotation;
+    result.scale = zoom;
+    
+    return result;
   }
 
   float CalculateDragRotationDelta() {
