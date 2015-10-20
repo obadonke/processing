@@ -14,6 +14,16 @@ class Transform {
     scale = s;
   }
 
+  void set(float tx, float ty, float r, float s) {
+    translation.set(tx,ty);
+    rotation = r;
+    scale = s;
+  }
+  
+  void set(Transform t) {
+    set(t.translation.x,t.translation.y, t.rotation, t.scale);
+  }
+  
   Transform copy() {
     return new Transform(translation, rotation, scale);
   }
@@ -24,4 +34,13 @@ class Transform {
     scale -= t.scale;
     return this;
   }
+
+  /// multiply all transforms by a scalar
+  Transform mult(float s) {
+    translation.mult(s);
+    rotation = rotation*s;
+    scale = scale*s;
+    return this;
+  }
+  
 }

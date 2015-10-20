@@ -60,9 +60,10 @@ enum ViewMode {
 }
 
 class ViewController {
-  float EASE_FACTOR = 0.85;
+  float EASE_FACTOR = 0.9;
   float ZOOM_STEP = 1.1;
-
+  float EASE_MIN_MAGNITUDE = 1.0;
+  
   int clickMouseX = -1;
   int clickMouseY = -1;
   float zoom = 1;
@@ -72,10 +73,10 @@ class ViewController {
   Transform base = new Transform();
   Transform lastActiveTransform = new Transform();
   Transform velocityTransform = new Transform();
+  Transform easeVelocityTransform = new Transform();
   
   PVector lastMouse = new PVector(0, 0);
   PVector velocity = new PVector(0, 0);
-  PVector easeVelocity = new PVector(0, 0);
 
   void HandleUserNavigation() {
     HandleUserInput();
@@ -164,7 +165,7 @@ class ViewController {
   }
 
   void StartEasing() {
-    easeVelocity = velocity.copy();
+    easeVelocityTransform.set(velocityTransform);
     mode = ViewMode.EASING;
   }
 
@@ -174,10 +175,16 @@ class ViewController {
       return;
     }
 
-    base.translation.x += easeVelocity.x;
-    base.translation.y += easeVelocity.y;
-    easeVelocity.mult(EASE_FACTOR);
-    if (easeVelocity.mag() < 1) 
+    if (easeVelocityTransform.translation.mag() > 0.9)
+    {
+      base.translation.add(easeVelocityTransform.translation);
+    }
+
+    easeVelocityTransform.mult(EASE_FACTOR);
+    
+    if (easeVelocityTransform.translation.mag() < EASE_MIN_MAGNITUDE 
+        && abs(easeVelocityTransform.rotation) < EASE_MIN_MAGNITUDE 
+        && abs(easeVelocityTransform.scale) < EASE_MIN_MAGNITUDE)
     {
       StopEasing();
     }
@@ -185,7 +192,7 @@ class ViewController {
 
 
   void StopEasing() {
-    easeVelocity.set(0, 0);
+    easeVelocityTransform.set(0,0,0,0);
     mode = ViewMode.IDLE;
   }
 
