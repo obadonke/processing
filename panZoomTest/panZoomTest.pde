@@ -185,7 +185,7 @@ class ViewController {
 
 
   void StopEasing() {
-    easeVelocityTransform.set(0,0,0,0);
+    easeVelocityTransform.set(0,0,0,1);
     mode = ViewMode.IDLE;
   }
 
