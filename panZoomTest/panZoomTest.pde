@@ -76,7 +76,6 @@ class ViewController {
   Transform easeVelocityTransform = new Transform();
   
   PVector lastMouse = new PVector(0, 0);
-  PVector velocity = new PVector(0, 0);
 
   void HandleUserNavigation() {
     HandleUserInput();
@@ -151,8 +150,6 @@ class ViewController {
       }
     }
 
-    velocity.x = mouseX-lastMouse.x;
-    velocity.y = mouseY-lastMouse.y;
     lastMouse.x = mouseX;
     lastMouse.y = mouseY;
   }
@@ -182,9 +179,7 @@ class ViewController {
 
     easeVelocityTransform.mult(EASE_FACTOR);
     
-    if (easeVelocityTransform.translation.mag() < EASE_MIN_MAGNITUDE 
-        && abs(easeVelocityTransform.rotation) < EASE_MIN_MAGNITUDE 
-        && abs(easeVelocityTransform.scale) < EASE_MIN_MAGNITUDE)
+    if (!AnyTransformMagGreaterThan(easeVelocityTransform, EASE_MIN_MAGNITUDE))
     {
       StopEasing();
     }
@@ -265,23 +260,22 @@ class ViewController {
   }
 
   void StopDrag() {
-    if (IsPanInteractive())
-    {
+    if (IsPanInteractive()) {
       base.translation.x += mouseX-clickMouseX;
       base.translation.y += mouseY-clickMouseY; 
-      if (velocity.mag() > 1)
-      {
-        StartEasing();
-      } else
-      {
-        mode = ViewMode.IDLE;
-      }
-    } else if (IsRotateInteractive())
-    {
+    } else if (IsRotateInteractive()) {
       float extraRotation = CalculateDragRotationDelta();
       ApplyRotationDeltaToBase(extraRotation);
+      
+      velocityTransform.translation.set(0,0);
+    }
+    
+    if (AnyTransformMagGreaterThan(velocityTransform,EASE_MIN_MAGNITUDE))  {
+      StartEasing();
+    } else {
       mode = ViewMode.IDLE;
     }
+      
     dragOp = DragOperation.NONE;
   }
   void StepZoom(int steps) {
@@ -303,5 +297,10 @@ class ViewController {
     float ax = (mouseX-base.translation.x)*(1-zoomFactor);
     float ay = (mouseY-base.translation.y)*(1-zoomFactor);
     base.translation.add(ax, ay);
+  }
+  
+  boolean AnyTransformMagGreaterThan(Transform t, float mag)
+  {
+    return t.translation.mag() > mag  || abs(t.rotation) > mag || abs(t.scale) > mag;
   }
 }
