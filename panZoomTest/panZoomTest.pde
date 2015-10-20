@@ -59,7 +59,7 @@ enum DragOperation {
   ROTATE
 }
 
-class TripleTransform {
+class Transform {
   PVector translation = new PVector(0,0);
   float rotation = 0;
   float scale = 1;
@@ -75,7 +75,7 @@ class ViewController {
   ViewMode mode = ViewMode.IDLE;
   DragOperation dragOp = DragOperation.NONE;
 
-  TripleTransform base = new TripleTransform();
+  Transform base = new Transform();
   
   PVector lastMouse = new PVector(0, 0);
   PVector velocity = new PVector(0, 0);
@@ -83,11 +83,11 @@ class ViewController {
 
   void HandleUserNavigation() {
     HandleUserInput();
-    TripleTransform activeTransforms = CalculateActiveTransforms();
+    Transform activeTransforms = CalculateActiveTransform();
     TransformView(activeTransforms);
   }
   
-  void TransformView(TripleTransform transforms)
+  void TransformView(Transform transforms)
   {
     translate(transforms.translation.x, transforms.translation.y);
     rotate(transforms.rotation);
@@ -184,7 +184,7 @@ class ViewController {
     mode = ViewMode.IDLE;
   }
 
-  TripleTransform CalculateActiveTransforms() {
+  Transform CalculateActiveTransform() {
     float rotationDelta = 0;
     float rotation = base.rotation;
     if (IsRotateInteractive())
@@ -205,7 +205,7 @@ class ViewController {
       translation.sub(translationRotOffset);
     }
 
-    TripleTransform result = new TripleTransform();
+    Transform result = new Transform();
     result.translation = translation;
     result.rotation = rotation;
     result.scale = zoom;
