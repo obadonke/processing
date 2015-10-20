@@ -35,7 +35,7 @@ void mouseWheel(MouseEvent event) {
 void mousePressed() {
   PVector coord = controller.ViewToModelCoord(mouseX, mouseY);
   println("Mouse: ", mouseX, ",", mouseY);
-  print("Zoom: ", controller.zoom);
+  print("Zoom: ", controller.base.scale);
   print(" Rot: ", degrees(controller.base.rotation));
   println(" Tran: ", controller.base.translation);
   println("Co-ord is: ", coord);
@@ -60,13 +60,12 @@ enum ViewMode {
 }
 
 class ViewController {
-  float EASE_FACTOR = 0.9;
+  float EASE_FACTOR = 0.85;
   float ZOOM_STEP = 1.1;
   float EASE_MIN_MAGNITUDE = 1.0;
   
   int clickMouseX = -1;
   int clickMouseY = -1;
-  float zoom = 1;
   ViewMode mode = ViewMode.IDLE;
   DragOperation dragOp = DragOperation.NONE;
 
@@ -103,13 +102,13 @@ class ViewController {
     PVector result = new PVector(x, y);
     result.sub(base.translation);
     result.rotate(-base.rotation);
-    result.mult(1.0/zoom);
+    result.mult(1.0/base.scale);
     return result;
   }
 
   PVector ModelToViewCoord(float x, float y) {
     PVector result = new PVector(x, y);
-    result.mult(zoom);
+    result.mult(base.scale);
     result.rotate(base.rotation);
     result.add(base.translation);
     return result;
@@ -172,11 +171,15 @@ class ViewController {
       return;
     }
 
-    if (easeVelocityTransform.translation.mag() > 0.9)
+    if (easeVelocityTransform.translation.mag() > EASE_MIN_MAGNITUDE)
     {
       base.translation.add(easeVelocityTransform.translation);
     }
 
+    if (abs(degrees(easeVelocityTransform.rotation)) > EASE_MIN_MAGNITUDE) {
+      ApplyRotationDeltaToBase(easeVelocityTransform.rotation);
+    }
+    
     easeVelocityTransform.mult(EASE_FACTOR);
     
     if (!AnyTransformMagGreaterThan(easeVelocityTransform, EASE_MIN_MAGNITUDE))
@@ -215,7 +218,7 @@ class ViewController {
     Transform result = new Transform();
     result.translation = translation;
     result.rotation = rotation;
-    result.scale = zoom;
+    result.scale = base.scale;
 
     return result;
   }
@@ -234,7 +237,7 @@ class ViewController {
   PVector CalculateRotationTranslationOffset(float rotationDelta) {
     PVector result = ViewToModelCoord(width/2, height/2);
     float newRotation = base.rotation+rotationDelta;
-    result = ModelToViewCoord(result, base.translation, newRotation, zoom);
+    result = ModelToViewCoord(result, base.translation, newRotation, base.scale);
     result.sub(width/2, height/2);
     return result;
   }
@@ -280,11 +283,11 @@ class ViewController {
   }
   void StepZoom(int steps) {
     float zoomFactor = (steps > 0) ? steps*ZOOM_STEP : -1.0/(steps*ZOOM_STEP);
-    float newZoom = zoom*zoomFactor;
+    float newZoom = base.scale*zoomFactor;
     if (newZoom > 0.1) 
     {
       AdjustTranslationForZoomChange(zoomFactor);
-      zoom = newZoom;
+      base.scale = newZoom;
     }
   }
 
@@ -301,6 +304,6 @@ class ViewController {
   
   boolean AnyTransformMagGreaterThan(Transform t, float mag)
   {
-    return t.translation.mag() > mag  || abs(t.rotation) > mag || abs(t.scale) > mag;
+    return t.translation.mag() > mag  || abs(degrees(t.rotation)) > mag || abs(t.scale) > mag;
   }
 }
