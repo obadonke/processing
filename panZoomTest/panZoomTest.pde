@@ -61,7 +61,7 @@ enum ViewMode {
 
 class ViewController {
   float EASE_FACTOR = 0.85;
-  float ZOOM_STEP = 1.1;
+  float ZOOM_STEP = 1.05;
   float EASE_MIN_MAGNITUDE = 1.0;
   
   int clickMouseX = -1;
@@ -74,8 +74,6 @@ class ViewController {
   Transform velocityTransform = new Transform();
   Transform easeVelocityTransform = new Transform();
   
-  PVector lastMouse = new PVector(0, 0);
-
   void HandleUserNavigation() {
     HandleUserInput();
     
@@ -148,9 +146,6 @@ class ViewController {
         StartDrag();
       }
     }
-
-    lastMouse.x = mouseX;
-    lastMouse.y = mouseY;
   }
 
   void MouseReleased() {
