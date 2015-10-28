@@ -1,3 +1,16 @@
+enum ViewMode {
+  IDLE, 
+  DRAGGING, 
+  EASING
+}
+
+enum DragOperation {
+  NONE, 
+    PAN, 
+    ZOOM, 
+    ROTATE
+}
+
 class ViewNavigator {
   float EASE_FACTOR = 0.85;
   float ZOOM_STEP = 1.05;
@@ -73,14 +86,14 @@ class ViewNavigator {
       if (!mousePressed) {
         MouseReleased();
       }
-    } else if (controller.mode == ViewMode.EASING) {
+    } else if (mode == ViewMode.EASING) {
       if (mousePressed) {
         StopEasing();
         StartDrag();
       } else {
         ApplyEasing();
       }
-    } else if (controller.mode == ViewMode.IDLE) {
+    } else if (mode == ViewMode.IDLE) {
       if (mousePressed) {
         StartDrag();
       }
@@ -192,7 +205,7 @@ class ViewNavigator {
     clickMouseY = mouseY;
 
     if (dragOp != DragOperation.NONE) {
-      controller.mode = ViewMode.DRAGGING;
+      mode = ViewMode.DRAGGING;
     }
   }
 

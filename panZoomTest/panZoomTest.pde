@@ -47,16 +47,3 @@ void mousePressed() {
     println("Comparison not so good. :O");
   }
 }
-
-enum ViewMode {
-  IDLE, 
-    DRAGGING, 
-    EASING
-}
-
-  enum DragOperation {
-  NONE, 
-    PAN, 
-    ZOOM, 
-    ROTATE
-}
