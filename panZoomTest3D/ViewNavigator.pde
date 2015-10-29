@@ -139,7 +139,7 @@ class ViewNavigator {
 
 
   void StopEasing() {
-    easeVelocityTransform = easeVelocityTransform.EmptyTransform();
+    easeVelocityTransform = easeVelocityTransform.emptyTransform();
     mode = ViewMode.IDLE;
   }
 

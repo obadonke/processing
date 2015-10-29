@@ -15,7 +15,7 @@ class Transform {
   }
 
   
-  Transform EmptyTransform() {
+  Transform emptyTransform() {
     return new Transform(new PVector(0,0,0), new PVector(0,0,0), 1);
   }
   
