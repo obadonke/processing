@@ -1,27 +1,34 @@
 class Transform {
-  PVector translation = new PVector(0, 0);
-  float rotation = 0;
+  PVector translation = new PVector(0, 0, 0);
+  PVector rotation = new PVector(0, 0, 0);
   float scale = 1;
 
   Transform()
   {
   }
 
-  Transform(PVector t, float r, float s)
+  Transform(PVector t, PVector r, float s)
   {
     translation = t.copy();
-    rotation = r;
+    rotation = r.copy();
     scale = s;
   }
 
-  void set(float tx, float ty, float r, float s) {
-    translation.set(tx,ty);
-    rotation = r;
+  
+  Transform EmptyTransform() {
+    return new Transform(new PVector(0,0,0), new PVector(0,0,0), 1);
+  }
+  
+  void set(float tx, float ty, float tz, float rx, float ry, float rz, float s) {
+    translation.set(tx, ty, tz);
+    rotation.set(rx, ry, rz);
     scale = s;
   }
   
   void set(Transform t) {
-    set(t.translation.x,t.translation.y, t.rotation, t.scale);
+    translation = t.translation.copy();
+    rotation = t.rotation.copy();
+    scale = t.scale;
   }
   
   Transform copy() {
@@ -30,7 +37,7 @@ class Transform {
 
   Transform sub(Transform t) {
     translation.sub(t.translation);
-    rotation -= t.rotation;
+    rotation.sub(t.rotation);
     scale -= t.scale;
     return this;
   }
@@ -38,7 +45,7 @@ class Transform {
   /// multiply all transforms by a scalar
   Transform mult(float s) {
     translation.mult(s);
-    rotation = rotation*s;
+    rotation.mult(s);
     scale = scale*s;
     return this;
   }
