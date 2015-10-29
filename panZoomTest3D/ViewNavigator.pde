@@ -103,6 +103,7 @@ class ViewNavigator {
   }
 
   void MouseReleased() {
+    println("Mouse released.");
     if (mode == ViewMode.DRAGGING)
     {
       StopDrag();

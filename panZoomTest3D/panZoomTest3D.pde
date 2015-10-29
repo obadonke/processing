@@ -1,3 +1,5 @@
+ViewNavigator navigator = new ViewNavigator();
+
 void setup()
 {
   size(640, 480, P3D);
@@ -8,6 +10,8 @@ void draw()
   background(60, 42, 67);
   fill(200, 0, 0);
 
+  navigator.HandleUserNavigation();
+  
   float stepAngle = 0; //frameCount*PI/180;
   float distToCamera = 250 + sin(stepAngle*2)*500;
   camera(0, 0, distToCamera, 0, 0, 0, 0, 1, 0);
