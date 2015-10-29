@@ -10,13 +10,16 @@ void draw()
   background(60, 42, 67);
   fill(200, 0, 0);
 
-  navigator.HandleUserNavigation();
-  
-  float stepAngle = 0; //frameCount*PI/180;
-  float distToCamera = 250 + sin(stepAngle*2)*500;
+  float distToCamera = 250;
   camera(0, 0, distToCamera, 0, 0, 0, 0, 1, 0);
   perspective();
-  //radians(45), width/height, distToCamera/10.0, distToCamera*10);
+  navigator.HandleUserNavigation();
+  
+  drawScene(0);
+}
+
+void drawScene(float stepAngle)
+{
   for (int i = 0; i < 3; i++) {
     if (i == 0)
     {
@@ -37,8 +40,8 @@ void draw()
 
 void drawBoxRow(float angle)
 {
-  drawBox(0, angle,angle,0);
-  drawBox(100, angle,angle*2,0);
+  drawBox(0, angle, angle, 0);
+  drawBox(100, angle, angle*2, 0);
   drawBox(200, angle*1.5, angle, 0);
   drawBox(-100, 0, angle, angle);
   drawBox(-200, angle, 0, angle*2.4);
@@ -46,9 +49,9 @@ void drawBoxRow(float angle)
 
 void drawBox(float trX, float rotX, float rotY, float rotZ)
 {
-  fill(color(200,128+int(trX),0));
+  fill(color(200, 128+int(trX), 0));
   pushMatrix();
-  translate(trX,0,0);
+  translate(trX, 0, 0);
   rotateX(rotX);
   rotateY(rotY);
   rotateZ(rotZ);
