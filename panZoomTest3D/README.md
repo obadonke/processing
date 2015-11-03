@@ -5,7 +5,7 @@ I'm developing the sketch in a very adhoc loose manner, the theory being that I'
 
 ## Status
 ### 3rd November 2015
-This exercise is taking too long due to breaks so going to focus on adding basic keyboard navigation focusing on manipulating the camera position.
+This exercise is taking too long due to breaks so going to focus on adding basic keyboard navigation that manipulates the camera position.
 
 ### 29th October 2015
 I've just copied the 2D navigation code I wrote in panZoomTest to a basic 3D scene and begun the conversion process.
