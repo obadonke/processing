@@ -37,9 +37,6 @@ class ViewNavigator {
   void TransformView(Transform transforms)
   {
     translate(transforms.translation.x, transforms.translation.y);
-    //rotateX(transforms.rotation.x);
-    //rotateY(transforms.rotation.y);
-    //rotateZ(transforms.rotation.z);
     scale(transforms.scale);
   }
   
@@ -53,7 +50,6 @@ class ViewNavigator {
   PVector ViewToModelCoord(float x, float y) {
     PVector result = new PVector(x, y);
     result.sub(base.translation);
-    //result.rotate(-base.rotation);
     result.mult(1.0/base.scale);
     return result;
   }
@@ -61,7 +57,6 @@ class ViewNavigator {
   PVector ModelToViewCoord(float x, float y) {
     PVector result = new PVector(x, y);
     result.mult(base.scale);
-    //result.rotate(base.rotation);
     result.add(base.translation);
     return result;
   }
@@ -103,7 +98,6 @@ class ViewNavigator {
   }
 
   void MouseReleased() {
-    println("Mouse released.");
     if (mode == ViewMode.DRAGGING)
     {
       StopDrag();
@@ -125,10 +119,6 @@ class ViewNavigator {
     {
       base.translation.add(easeVelocityTransform.translation);
     }
-
-    //if (abs(degrees(easeVelocityTransform.rotation)) > EASE_MIN_MAGNITUDE) {
-    //  ApplyRotationDeltaToBase(easeVelocityTransform.rotation);
-    //}
     
     easeVelocityTransform.mult(EASE_FACTOR);
     
@@ -145,52 +135,19 @@ class ViewNavigator {
   }
 
   Transform CalculateActiveTransform() {
-    float rotationDelta = 0;
-    //float rotation = base.rotation;
-    //if (IsRotateInteractive())
-    //{
-    //  rotationDelta = CalculateDragRotationDelta();
-    //  rotation += rotationDelta;
-    //}
-
     PVector translation = base.translation.copy();
     if (IsPanInteractive()) 
     {
       translation.x += mouseX-clickMouseX;
       translation.y += mouseY-clickMouseY;
     }
-    //if (rotationDelta != 0)
-    //{
-    //  PVector translationRotOffset = CalculateRotationTranslationOffset(rotationDelta);
-    //  translation.sub(translationRotOffset);
-    //}
 
     Transform result = new Transform();
     result.translation = translation;
-    //result.rotation = rotation;
     result.scale = base.scale;
 
     return result;
   }
-
-  //float CalculateDragRotationDelta() {
-  //  int midScreenX = width/2;
-  //  int midScreenY = height/2;
-  //  PVector startDelta = new PVector(clickMouseX - midScreenX, clickMouseY - midScreenY);
-  //  PVector currentDelta = new PVector(mouseX - midScreenX, mouseY - midScreenY);
-
-  //  float startDeltaR = atan2(startDelta.y, startDelta.x);
-  //  float deltaR = atan2(currentDelta.y, currentDelta.x);
-  //  return deltaR - startDeltaR;
-  //}
-
-  //PVector CalculateRotationTranslationOffset(float rotationDelta) {
-  //  PVector result = ViewToModelCoord(width/2, height/2);
-  //  float newRotation = base.rotation+rotationDelta;
-  //  result = ModelToViewCoord(result, base.translation, newRotation, base.scale);
-  //  result.sub(width/2, height/2);
-  //  return result;
-  //}
 
   void StartDrag() {
     switch (mouseButton) {
@@ -217,12 +174,6 @@ class ViewNavigator {
       base.translation.x += mouseX-clickMouseX;
       base.translation.y += mouseY-clickMouseY; 
     } 
-    //else if (IsRotateInteractive()) {
-    //  float extraRotation = CalculateDragRotationDelta();
-    //  ApplyRotationDeltaToBase(extraRotation);
-      
-    //  velocityTransform.translation.set(0,0);
-    //}
     
     if (AnyTransformMagGreaterThan(velocityTransform,EASE_MIN_MAGNITUDE))  {
       StartEasing();
@@ -241,11 +192,6 @@ class ViewNavigator {
       base.scale = newZoom;
     }
   }
-
-  //void ApplyRotationDeltaToBase(float rotationDelta) {
-  //  base.translation.sub(CalculateRotationTranslationOffset(rotationDelta));
-  //  base.rotation += rotationDelta;
-  //}
 
   void AdjustTranslationForZoomChange(float zoomFactor) {
     float ax = (mouseX-base.translation.x)*(1-zoomFactor);
