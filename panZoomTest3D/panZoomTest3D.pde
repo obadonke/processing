@@ -1,8 +1,6 @@
 ViewNavigator navigator = new ViewNavigator();
 float distToCamera = 250;
-PVector eyeOffset = new PVector(0, 0, distToCamera);
-PVector lookAt = new PVector(0,0,0);
-PVector up = new PVector(0,1,0);
+CameraPosition cameraPos = new CameraPosition(distToCamera);
 
 void setup()
 {
@@ -14,7 +12,9 @@ void draw()
   background(60, 42, 67);
   fill(200, 0, 0);
 
-  PVector eyePos = PVector.add(lookAt, eyeOffset);
+  PVector eyePos = cameraPos.getEyePos();
+  PVector lookAt = cameraPos.getLookAt();
+  PVector up = cameraPos.getUp();
   
   camera(eyePos.x, eyePos.y, eyePos.z, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
   perspective();
