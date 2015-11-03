@@ -1,4 +1,8 @@
 ViewNavigator navigator = new ViewNavigator();
+float distToCamera = 250;
+PVector eyeOffset = new PVector(0, 0, distToCamera);
+PVector lookAt = new PVector(0,0,0);
+PVector up = new PVector(0,1,0);
 
 void setup()
 {
@@ -10,8 +14,9 @@ void draw()
   background(60, 42, 67);
   fill(200, 0, 0);
 
-  float distToCamera = 250;
-  camera(0, 0, distToCamera, 0, 0, 0, 0, 1, 0);
+  PVector eyePos = PVector.add(lookAt, eyeOffset);
+  
+  camera(eyePos.x, eyePos.y, eyePos.z, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
   perspective();
   navigator.HandleUserNavigation();
   
