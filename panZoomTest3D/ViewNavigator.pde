@@ -6,16 +6,16 @@ enum ViewMode {
 
 enum DragOperation {
   NONE, 
-    PAN, 
-    ZOOM, 
-    ROTATE
+  PAN, 
+  ZOOM, 
+  ROTATE
 }
 
 class ViewNavigator {
   float EASE_FACTOR = 0.85;
   float ZOOM_STEP = 1.05;
   float EASE_MIN_MAGNITUDE = 1.0;
-  
+
   int clickMouseX = -1;
   int clickMouseY = -1;
   ViewMode mode = ViewMode.IDLE;
@@ -25,10 +25,10 @@ class ViewNavigator {
   Transform lastActiveTransform = new Transform();
   Transform velocityTransform = new Transform();
   Transform easeVelocityTransform = new Transform();
-  
+
   void HandleUserNavigation() {
     HandleUserInput();
-    
+
     Transform activeTransform = CalculateActiveTransform();
     UpdateVelocityTransform(activeTransform);
     TransformView(activeTransform);
@@ -39,14 +39,14 @@ class ViewNavigator {
     translate(transforms.translation.x, transforms.translation.y);
     scale(transforms.scale);
   }
-  
+
   void UpdateVelocityTransform(Transform activeTransform)
   {
     velocityTransform = activeTransform.copy();
     velocityTransform.sub(lastActiveTransform);
     lastActiveTransform = activeTransform;
   }
-  
+
   PVector ViewToModelCoord(float x, float y) {
     PVector result = new PVector(x, y);
     result.sub(base.translation);
@@ -93,7 +93,38 @@ class ViewNavigator {
     } else if (mode == ViewMode.IDLE) {
       if (mousePressed) {
         StartDrag();
+      } else if (keyPressed) {
+        HandleIdleKeyPress();
       }
+    }
+  }
+
+  void HandleIdleKeyPress() {
+    switch(key) {
+    case KeyBinding.KEY_UP:
+      break;
+    case KeyBinding.KEY_DOWN:
+      break;
+    case KeyBinding.KEY_LEFT:
+      break;
+    case KeyBinding.KEY_RIGHT:
+      break;
+    case KeyBinding.KEY_FWD:
+      break;
+    case KeyBinding.KEY_BACK:
+      break;
+    case KeyBinding.KEY_ROLL_CW:
+      break;
+    case KeyBinding.KEY_ROLL_CCW:
+      break;
+    case KeyBinding.KEY_PITCH_UP:
+      break;
+    case KeyBinding.KEY_PITCH_DOWN:
+      break;
+    case KeyBinding.KEY_YAW_L:
+      break;
+    case KeyBinding.KEY_YAW_R:
+      break;
     }
   }
 
@@ -119,9 +150,9 @@ class ViewNavigator {
     {
       base.translation.add(easeVelocityTransform.translation);
     }
-    
+
     easeVelocityTransform.mult(EASE_FACTOR);
-    
+
     if (!AnyTransformMagGreaterThan(easeVelocityTransform, EASE_MIN_MAGNITUDE))
     {
       StopEasing();
@@ -172,15 +203,15 @@ class ViewNavigator {
   void StopDrag() {
     if (IsPanInteractive()) {
       base.translation.x += mouseX-clickMouseX;
-      base.translation.y += mouseY-clickMouseY; 
+      base.translation.y += mouseY-clickMouseY;
     } 
-    
-    if (AnyTransformMagGreaterThan(velocityTransform,EASE_MIN_MAGNITUDE))  {
+
+    if (AnyTransformMagGreaterThan(velocityTransform, EASE_MIN_MAGNITUDE)) {
       StartEasing();
     } else {
       mode = ViewMode.IDLE;
     }
-      
+
     dragOp = DragOperation.NONE;
   }
   void StepZoom(int steps) {
@@ -198,7 +229,7 @@ class ViewNavigator {
     float ay = (mouseY-base.translation.y)*(1-zoomFactor);
     base.translation.add(ax, ay);
   }
-  
+
   boolean AnyTransformMagGreaterThan(Transform t, float mag)
   {
     return t.translation.mag() > mag  || t.rotation.mag() > mag || abs(t.scale) > mag;
