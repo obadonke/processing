@@ -20,4 +20,10 @@ class CameraPosition {
   PVector getUp() {
     return up;
   }
+  
+  void Translate(PVector translation)
+  {
+    //TODO: move with respect to current orientation.
+    lookAt.add(translation);
+  }
 }

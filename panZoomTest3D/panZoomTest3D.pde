@@ -12,13 +12,13 @@ void draw()
   background(60, 42, 67);
   fill(200, 0, 0);
 
+  navigator.HandleUserNavigation(cameraPos);
   PVector eyePos = cameraPos.getEyePos();
   PVector lookAt = cameraPos.getLookAt();
   PVector up = cameraPos.getUp();
   
   camera(eyePos.x, eyePos.y, eyePos.z, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
   perspective();
-  navigator.HandleUserNavigation();
   
   drawScene(0);
 }

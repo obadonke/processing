@@ -15,18 +15,21 @@ class ViewNavigator {
   float EASE_FACTOR = 0.85;
   float ZOOM_STEP = 1.05;
   float EASE_MIN_MAGNITUDE = 1.0;
-
+  float MOVEMENT_DELTA = 2;
+  
   int clickMouseX = -1;
   int clickMouseY = -1;
   ViewMode mode = ViewMode.IDLE;
   DragOperation dragOp = DragOperation.NONE;
-
+  CameraPosition activeCameraPos;
+  
   Transform base = new Transform();
   Transform lastActiveTransform = new Transform();
   Transform velocityTransform = new Transform();
   Transform easeVelocityTransform = new Transform();
 
-  void HandleUserNavigation() {
+  void HandleUserNavigation(CameraPosition cameraPos) {
+    activeCameraPos = cameraPos;
     HandleUserInput();
 
     Transform activeTransform = CalculateActiveTransform();
@@ -102,16 +105,22 @@ class ViewNavigator {
   void HandleIdleKeyPress() {
     switch(key) {
     case KeyBinding.KEY_UP:
+      MoveUp();
       break;
     case KeyBinding.KEY_DOWN:
+      MoveDown();
       break;
     case KeyBinding.KEY_LEFT:
+      MoveLeft();
       break;
     case KeyBinding.KEY_RIGHT:
+      MoveRight();
       break;
     case KeyBinding.KEY_FWD:
+      MoveForward();
       break;
     case KeyBinding.KEY_BACK:
+      MoveBack();
       break;
     case KeyBinding.KEY_ROLL_CW:
       break;
@@ -128,6 +137,35 @@ class ViewNavigator {
     }
   }
 
+  void MoveLeft() {
+    MoveCamera(-1,0,0);
+  }
+  
+  void MoveRight() {
+    MoveCamera(1,0,0);
+  }
+  
+  void MoveUp() {
+    MoveCamera(0,-1,0);
+  }
+  
+  void MoveDown() {
+    MoveCamera(0,1,0);
+  }
+  void MoveForward() {
+    MoveCamera(0,0,-1);
+  }
+  
+  void MoveBack() {
+    MoveCamera(0,0,1);
+  }
+  
+  void MoveCamera(float x, float y, float z) {
+    PVector movement = new PVector(x,y,z);
+    movement.mult(MOVEMENT_DELTA);
+    activeCameraPos.Translate(movement);
+  }
+  
   void MouseReleased() {
     if (mode == ViewMode.DRAGGING)
     {
