@@ -15,15 +15,15 @@ Rotation is completely borked. Translation in X and Y with easing seems to work 
 It's looking like the best course of action is to strip out most of the code in ViewNavigator, leaving just the shell that handles turning user input into actionable operations with state. We'll see.
 
 ## Keyboard Navigation Bindings
-w = move up
-s = move down
-a = move left
-d = move right
-q = move forward(zoom+)
-e = move back (zoom-)
-j = roll anti-clockwise
-l = roll clockwise
-i = pitch up
-k = pitch down
-u = yaw left
-o = yaw right
+ * w = move up
+ * s = move down
+ * a = move left
+ * d = move right
+ * q = move forward(zoom+)
+ * e = move back (zoom-)
+ * j = roll anti-clockwise
+ * l = roll clockwise
+ * i = pitch up
+ * k = pitch down
+ * u = yaw left
+ * o = yaw right
