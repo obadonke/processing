@@ -140,7 +140,7 @@ class ViewNavigator {
   }
   
   void Zoom(ZoomDirection dir) {
-    float factor = (dir == ZoomDirection.IN) ? ZOOM_STEP : 1/ZOOM_STEP;
+    float factor = (dir == ZoomDirection.IN) ? 1/ZOOM_STEP : ZOOM_STEP;
     activeCameraPos.Zoom(factor);
   }
   

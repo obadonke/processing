@@ -1,5 +1,7 @@
 ViewNavigator navigator = new ViewNavigator();
 float distToCamera = 250;
+float CURSOR_SIZE = 25;
+
 CameraPosition cameraPos = new CameraPosition(distToCamera);
 
 void setup()
@@ -21,10 +23,13 @@ void draw()
   perspective();
   
   drawScene(0);
+  drawCursor(lookAt);
 }
 
 void drawScene(float stepAngle)
 {
+  strokeWeight(2);
+  stroke(255);
   for (int i = 0; i < 3; i++) {
     if (i == 0)
     {
@@ -41,6 +46,20 @@ void drawScene(float stepAngle)
       popMatrix();
     }
   }
+}
+
+void drawCursor(PVector center)
+{
+  pushMatrix();
+  translate(center.x, center.y, center.z);
+  strokeWeight(3);
+  stroke(240,0,0);
+  line(-CURSOR_SIZE,0,0,CURSOR_SIZE,0,0);
+  stroke(0,240,0);
+  line(0,-CURSOR_SIZE,0,0,CURSOR_SIZE,0);
+  stroke(0,0,240);
+  line(0,0,-CURSOR_SIZE,0,0,CURSOR_SIZE);
+  popMatrix();
 }
 
 void drawBoxRow(float angle)
