@@ -3,12 +3,14 @@ class CameraPosition {
   private PVector eyeDirection;
   private PVector lookAt;
   private PVector up;
-
+  final float MIN_EYE_DISTANCE = 0.5;
+  
   CameraPosition(float distToCamera) {
     eyeDistance = distToCamera;
     eyeDirection = new PVector(0, 0, 1);
     lookAt = new PVector(0, 0, 0);
     up = new PVector(0, 1, 0);
+    println(up.cross(eyeDirection));
   }
   
   PVector getEyePos() {
@@ -24,18 +26,24 @@ class CameraPosition {
     return up;
   }
   
-  void Translate(PVector translation)
-  {
-    //TODO: move with respect to current orientation.
-    lookAt.add(translation);
+  PVector getRight() {
+    return up.cross(eyeDirection);
   }
   
-  void Zoom(float amount)
+  void Translate(PVector translation)
   {
-    if (eyeDistance + amount <= 0) {
+    PVector globalTranslation = PVector.mult(getRight(),translation.x);
+    globalTranslation.add(PVector.mult(up,translation.y));
+    globalTranslation.add(PVector.mult(eyeDirection,translation.z));
+    lookAt.add(globalTranslation);
+  }
+  
+  void Zoom(float factor)
+  {
+    if (eyeDistance * factor < MIN_EYE_DISTANCE) {
       return;
     }
     
-    eyeDistance += amount;
+    eyeDistance *= factor;
   }
 }
