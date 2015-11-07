@@ -10,7 +10,6 @@ class CameraPosition {
     eyeDirection = new PVector(0, 0, 1);
     lookAt = new PVector(0, 0, 0);
     up = new PVector(0, 1, 0);
-    println(up.cross(eyeDirection));
   }
   
   PVector getEyePos() {
@@ -45,5 +44,11 @@ class CameraPosition {
     }
     
     eyeDistance *= factor;
+  }
+  
+  void Roll(float angle)
+  {
+    // this will only work whilst Pitch and Yaw are unimplemented.
+    up.rotate(angle);
   }
 }

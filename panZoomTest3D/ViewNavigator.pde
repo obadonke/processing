@@ -3,6 +3,7 @@ class ViewNavigator {
   float ZOOM_STEP = 1.05;
   float EASE_MIN_MAGNITUDE = 1.0;
   float MOVEMENT_DELTA = 2;
+  float ROTATION_DELTA = 0.1;
   
   int clickMouseX = -1;
   int clickMouseY = -1;
@@ -116,8 +117,10 @@ class ViewNavigator {
       Zoom(ZoomDirection.OUT);
       break;
     case KeyBinding.KEY_ROLL_CW:
+      activeCameraPos.Roll(ROTATION_DELTA);
       break;
     case KeyBinding.KEY_ROLL_CCW:
+      activeCameraPos.Roll(-ROTATION_DELTA);
       break;
     case KeyBinding.KEY_PITCH_UP:
       break;
