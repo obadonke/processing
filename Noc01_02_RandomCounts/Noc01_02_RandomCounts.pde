@@ -1,12 +1,15 @@
 int[] randomCounts;
+int baseColor = 285;
 
 void setup() {
   size(640, 240);
+  colorMode(HSB,360,100,100);
   randomCounts = new int[30];
 }
 
 void draw() {
-  background(255);
+  baseColor = int(map(mouseX,0,width,0,360));
+  background(baseColor,13,20);
 
   int index = int(random(randomCounts.length));
   randomCounts[index]++;
@@ -20,9 +23,9 @@ void draw() {
 }
 
 void setColor(int index) {
-  int gray = int(map(index, 0, randomCounts.length, 200, 255));
-  stroke(gray);
-  fill(gray-50);
+  int gray = int(map(index, 0, randomCounts.length-1, 70, 100));
+  stroke(baseColor,70,gray-20);
+  fill(baseColor,70,gray);
 }
 
 void drawSimpleCount() {
