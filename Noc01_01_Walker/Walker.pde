@@ -1,6 +1,6 @@
 class Walker {
-  int x;
-  int y;
+  float x;
+  float y;
 
   Walker() {
     x = width/2;
@@ -13,10 +13,10 @@ class Walker {
   }
 
   void step() {
-    int stepx = int(random(3))-1;
-    int stepy = int(random(3))-1;
+    float stepx = random(-2,2);
+    float stepy = random(-2,2);
     
-    x += stepx*2;
-    y += stepy*2;
+    x += stepx;
+    y += stepy;
   }
 }
