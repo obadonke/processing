@@ -1,0 +1,10 @@
+= Processing exploration
+obadonke, github@obadonke.com
+
+An exploration of the Processing language
+
+== Notes
+As of 25th January 2016, I've started reading the *Nature of Code* by Daniel Shiffman. You can find the book at http://natureofcode.com.
+
+I am chipping away at the Nature of Code in my spare time. The book also indirectly introduced me to AsciiDoc and Asciidoctor which you can find out more about here: http://asciidoctor.org.
+
