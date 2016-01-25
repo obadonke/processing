@@ -1,21 +1,9 @@
-enum ViewMode {
-  IDLE, 
-  DRAGGING, 
-  EASING
-}
-
-enum DragOperation {
-  NONE, 
-  PAN, 
-  ZOOM, 
-  ROTATE
-}
-
 class ViewNavigator {
   float EASE_FACTOR = 0.85;
   float ZOOM_STEP = 1.05;
   float EASE_MIN_MAGNITUDE = 1.0;
   float MOVEMENT_DELTA = 2;
+  float ROTATION_DELTA = 0.1;
   
   int clickMouseX = -1;
   int clickMouseY = -1;
@@ -105,26 +93,34 @@ class ViewNavigator {
   void HandleIdleKeyPress() {
     switch(key) {
     case KeyBinding.KEY_UP:
-      MoveUp();
+      MoveCamera(0,-1,0);
       break;
     case KeyBinding.KEY_DOWN:
-      MoveDown();
+      MoveCamera(0,1,0);
       break;
     case KeyBinding.KEY_LEFT:
-      MoveLeft();
+      MoveCamera(-1,0,0);
       break;
     case KeyBinding.KEY_RIGHT:
-      MoveRight();
+      MoveCamera(1,0,0);
       break;
     case KeyBinding.KEY_FWD:
-      MoveForward();
+      MoveCamera(0,0,-1);
       break;
     case KeyBinding.KEY_BACK:
-      MoveBack();
+      MoveCamera(0,0,1);
+      break;
+    case KeyBinding.KEY_ZOOMIN:
+      Zoom(ZoomDirection.IN);
+      break;
+    case KeyBinding.KEY_ZOOMOUT:
+      Zoom(ZoomDirection.OUT);
       break;
     case KeyBinding.KEY_ROLL_CW:
+      activeCameraPos.Roll(ROTATION_DELTA);
       break;
     case KeyBinding.KEY_ROLL_CCW:
+      activeCameraPos.Roll(-ROTATION_DELTA);
       break;
     case KeyBinding.KEY_PITCH_UP:
       break;
@@ -136,34 +132,16 @@ class ViewNavigator {
       break;
     }
   }
-
-  void MoveLeft() {
-    MoveCamera(-1,0,0);
-  }
-  
-  void MoveRight() {
-    MoveCamera(1,0,0);
-  }
-  
-  void MoveUp() {
-    MoveCamera(0,-1,0);
-  }
-  
-  void MoveDown() {
-    MoveCamera(0,1,0);
-  }
-  void MoveForward() {
-    MoveCamera(0,0,-1);
-  }
-  
-  void MoveBack() {
-    MoveCamera(0,0,1);
-  }
-  
+ 
   void MoveCamera(float x, float y, float z) {
     PVector movement = new PVector(x,y,z);
     movement.mult(MOVEMENT_DELTA);
     activeCameraPos.Translate(movement);
+  }
+  
+  void Zoom(ZoomDirection dir) {
+    float factor = (dir == ZoomDirection.IN) ? 1/ZOOM_STEP : ZOOM_STEP;
+    activeCameraPos.Zoom(factor);
   }
   
   void MouseReleased() {

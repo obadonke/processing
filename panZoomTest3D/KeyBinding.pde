@@ -5,6 +5,8 @@ class KeyBinding {
   static final char KEY_RIGHT = 'd';
   static final char KEY_FWD = 'q';
   static final char KEY_BACK = 'e';
+  static final char KEY_ZOOMIN = 'r';
+  static final char KEY_ZOOMOUT = 'f';
   static final char KEY_ROLL_CW = 'l';
   static final char KEY_ROLL_CCW = 'j';
   static final char KEY_PITCH_UP = 'i';
