@@ -8,13 +8,13 @@ class Walker {
   }
 
   void display() {
-    stroke(0);
-    point(x, y);
+    fill(0);
+    ellipse(x,y,2,2);
   }
 
   void step() {
-    float stepx = random(-2,2);
-    float stepy = random(-2,2);
+    float stepx = random(-3,3);
+    float stepy = random(-3,3);
     
     x += stepx;
     y += stepy;
