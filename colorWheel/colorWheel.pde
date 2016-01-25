@@ -10,8 +10,11 @@ PImage colorWheel = null;
 int hueSelected;
 
 void setup() {
-  size(gradientBoxStart+gradientBoxSize, wheelDiameter);
   colorMode(HSB, 360, 100, 100);
+}
+
+void settings() {
+  size(gradientBoxStart+gradientBoxSize, wheelDiameter);
 }
 
 void draw() {
