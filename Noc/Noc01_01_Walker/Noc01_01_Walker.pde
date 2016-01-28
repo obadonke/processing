@@ -1,7 +1,7 @@
 Walker w;
 
 void setup() {
-  size(640, 360);
+  size(480, 240);
   w = new Walker();
   background(255);
 }
