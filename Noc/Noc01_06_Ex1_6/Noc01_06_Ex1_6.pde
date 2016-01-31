@@ -1,3 +1,7 @@
+// Nature of Code
+// Exercise 1.6 Monte Carlo step size walker.
+// Using vectors even though they haven't been introduced yet.
+
 Walker wExp, wNorm;
 
 int expColor = 0;
