@@ -1,24 +1,31 @@
+enum WalkMode {
+  Simple,
+  Monte_Linear,
+  Monte_Exponential
+}
+
 class Walker {
   float x;
   float y;
   boolean isExponential;
   int walkerColor;
+  WalkMode mode;
   
-  Walker(boolean exponential, int col) {
+  Walker(WalkMode mode, int col) {
     x = width/2;
     y = height/2;
-    isExponential = exponential;
+    this.mode = mode;
     walkerColor = col;
   }
 
   void display() {
-    stroke(walkerColor);
-    fill(walkerColor);
-    ellipse(x,y,2,2);
+    stroke(walkerColor,dotSaturation,dotBrightness);
+    fill(walkerColor,dotSaturation,dotBrightness);
+    ellipse(x,y,dotSize,dotSize);
   }
 
   void step() {
-    float stepSize = nextMonteCarlo()*4;
+    float stepSize = (mode == WalkMode.Simple) ? random(0,maxStep) : nextMonteCarlo()*maxStep;
     PVector direction = new PVector(random(-1,1),random(-1,1));
     direction.setMag(stepSize);
     x += direction.x;
@@ -41,9 +48,9 @@ class Walker {
     while (true) {
       float r1 = random(0,1);
       float r2 = random(0,1);
-      if (isExponential && r2 < r1*r1) {
+      if (mode == WalkMode.Monte_Exponential && r2 < r1*r1) {
         return r1;
-      } else if (!isExponential && r2 < r1) {
+      } else if (mode == WalkMode.Monte_Linear && r2 < r1) {
         return r1;
       }
     }
