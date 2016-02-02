@@ -1,28 +1,22 @@
 class Walker {
-  float x;
-  float y;
+  float x, y;
+  float tx, ty;
   
   Walker() {
-    x = width/2;
-    y = height/2;
+    tx = 0;
+    ty = 10000;
   }
 
   void display() {
     fill(0);
-    ellipse(x,y,2,2);
+    ellipse(x,y,4,4);
   }
 
   void step() {
-    float stepx = random(-4,4);
-    float stepy = random(-4,4);
+    x = map(noise(tx), 0, 1, 0, width);  // x- and y-location mapped from noise
+    y = map(noise(ty), 0, 1, 0, height);
     
-    x += stepx;
-    y += stepy;
-    
-    if (y > height || x > width || x < 0 || y < 0) 
-    {
-      y = height/2;
-      x = width/2;
-    }
+    tx += 0.01;  // move through Perlin space
+    ty += 0.01;
   }
 }
