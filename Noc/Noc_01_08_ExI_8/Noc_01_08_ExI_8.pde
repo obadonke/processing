@@ -33,5 +33,5 @@ void fillPixels() {
     xOffset += 0.01;
   }
   updatePixels();
-  //offset+= 0.01;
+  offset+= 0.01;
 }
