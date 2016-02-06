@@ -23,15 +23,16 @@ void setup() {
   background(0, 0, 100);
   drawLegendItem("Random walker Ex 1.7 with Monte Carlo", 0, 0, 0);
 
-  Walker w = new Walker(simpleColor, new SimpleRandom());
+  IRandom simpleRandom = new SimpleRandom();
+  Walker w = new Walker(simpleColor, simpleRandom);
   drawLegendItem("Simple Random", simpleColor, dotBrightness, 2);
   walkers[0] = w;
   
-  w = new Walker(linearColor, new MonteCarloLinear());
+  w = new Walker(linearColor, new MonteCarlo(false, simpleRandom));
   drawLegendItem("Monte Carlo Linear", linearColor, dotBrightness, 3);
   walkers[1] = w;
 
-  w = new Walker(expColor, new MonteCarloExponential());
+  w = new Walker(expColor, new MonteCarlo(true, simpleRandom));
   drawLegendItem("Monte Carlo Exponential", expColor, dotBrightness, 4);
   walkers[2] = w;
   

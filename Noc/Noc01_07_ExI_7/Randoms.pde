@@ -3,29 +3,33 @@ interface IRandom {
    float getRandom();
 }
 
-// return next Monte Carlo number in range 0 (inclusive) to 1 (exclusive)
-float nextMonteCarlo(boolean isExponential)
+
+class MonteCarlo implements IRandom {
+  IRandom valueGen;
+  boolean isExponential;
+  
+  MonteCarlo(boolean isExponential, IRandom valueGen)
   {
+    this.valueGen = valueGen;
+    this.isExponential = isExponential;
+  }
+  
+  float getRandom() {
+    return nextMonteCarlo(isExponential);
+  }
+
+ // return next Monte Carlo number in range 0 (inclusive) to 1 (exclusive)
+ private float nextMonteCarlo(boolean isExponential)
+ {
     while (true) {
-      float r1 = random(0,1);
-      float r2 = random(0,1);
+      float r1 = valueGen.getRandom();
+      float r2 = valueGen.getRandom();
       if (isExponential && r2 < r1*r1) {
         return r1;
       } else if (!isExponential && r2 < r1) {
         return r1;
       }
     }
-  }
-
-class MonteCarloLinear implements IRandom {
-  float getRandom() {
-    return nextMonteCarlo(false);
-  }
-}
-
-class MonteCarloExponential implements IRandom {
-  float getRandom() {
-    return nextMonteCarlo(true);
   }
 }
 
