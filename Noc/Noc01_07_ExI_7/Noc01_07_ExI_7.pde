@@ -2,8 +2,8 @@
 // Exercise I.7 Introducing Perlin noise into I.6 Monte Carlo walker
 // Using vectors even though they haven't been introduced yet.
 
-Walker[] walkers = new Walker[5];
-int[] walkerColors = {0,60,120,180,240};
+Walker[] walkers = new Walker[6];
+int[] walkerColors = {0, 60, 120, 180, 240, 300};
 
 int txtSize = 14;
 
@@ -21,31 +21,41 @@ void setup() {
 
   IRandom simpleRandom = new SimpleRandom();
 
-  int walkerHue = walkerColors[0];
+  int walkIndex = 0;
+  int walkerHue = walkerColors[walkIndex];
   Walker w = new Walker(walkerHue, simpleRandom);
-  drawLegendItem("Simple Random", walkerHue, dotBrightness, 2);
-  walkers[0] = w;
-  
-  walkerHue = walkerColors[1];
-  w = new Walker(walkerHue, new MonteCarlo(false, simpleRandom));
-  drawLegendItem("Monte Carlo Linear", walkerHue, dotBrightness, 3);
-  walkers[1] = w;
+  drawLegendItem("Simple Random", walkerHue, dotBrightness, walkIndex+2);
+  walkers[walkIndex] = w;
 
-  walkerHue = walkerColors[2];
+  ++walkIndex;
+  walkerHue = walkerColors[walkIndex];
+  w = new Walker(walkerHue, new MonteCarlo(false, simpleRandom));
+  drawLegendItem("Monte Carlo Linear", walkerHue, dotBrightness, walkIndex+2);
+  walkers[walkIndex] = w;
+
+  ++walkIndex;
+  walkerHue = walkerColors[walkIndex];
   w = new Walker(walkerHue, new MonteCarlo(true, simpleRandom));
-  drawLegendItem("Monte Carlo Exponential", walkerHue, dotBrightness, 4);
-  walkers[2] = w;
-  
-  walkerHue = walkerColors[3];
-  w = new Walker(walkerHue, new PerlinNoise(1,0.01));
-  drawLegendItem("Perlin Noise", walkerHue, dotBrightness, 5);
-  walkers[3] = w;
-  
-  walkerHue = walkerColors[4];
-  w = new Walker(walkerHue, new MonteCarlo(false,new PerlinNoise(100,0.01)));
-  drawLegendItem("Perlin Noise through Monte Carlo Linear", walkerHue, dotBrightness, 6);
-  walkers[4] = w;
-  
+  drawLegendItem("Monte Carlo Exponential", walkerHue, dotBrightness, walkIndex+2);
+  walkers[walkIndex] = w;
+
+  ++walkIndex;
+  walkerHue = walkerColors[walkIndex];
+  w = new Walker(walkerHue, new PerlinNoise(1, 0.1));
+  drawLegendItem("Perlin Noise", walkerHue, dotBrightness, walkIndex+2);
+  walkers[walkIndex] = w;
+
+  ++walkIndex;
+  walkerHue = walkerColors[walkIndex];
+  w = new Walker(walkerHue, new MonteCarlo(false, new PerlinNoise(100, 0.1)));
+  drawLegendItem("Perlin Noise through Monte Carlo Linear", walkerHue, dotBrightness, walkIndex+2);
+  walkers[walkIndex] = w;
+
+  ++walkIndex;
+  walkerHue = walkerColors[walkIndex];
+  w = new Walker(walkerHue, new MonteCarlo(true, new PerlinNoise(1000, 1)));
+  drawLegendItem("Perlin Noise through Monte Carlo Exponential", walkerHue, dotBrightness, walkIndex+2);
+  walkers[walkIndex] = w;
 }
 
 void drawLegendItem(String text, int hue, int brightness, int row)

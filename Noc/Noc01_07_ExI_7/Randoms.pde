@@ -21,7 +21,9 @@ class MonteCarlo implements IRandom {
  // return next Monte Carlo number in range 0 (inclusive) to 1 (exclusive)
  private float nextMonteCarlo(boolean isExponential)
  {
-    while (true) {
+   int loops = 0;
+   
+    while (loops < 1000) {
       float r1 = valueGen.getRandom();
       float r2 = valueGen.getRandom();
       if (isExponential && r2 < r1*r1) {
@@ -29,7 +31,11 @@ class MonteCarlo implements IRandom {
       } else if (!isExponential && r2 < r1) {
         return r1;
       }
+      ++loops;
     }
+    
+    println((isExponential ? "Exp" : "Linear"),"failed to find a number in ",loops, "attempts");
+    return 0;
   }
 }
 
