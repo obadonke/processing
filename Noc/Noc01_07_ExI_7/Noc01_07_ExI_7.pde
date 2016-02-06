@@ -11,6 +11,7 @@ int dotSaturation = 80;
 int dotBrightness = 80;
 int dotSize = 3;
 int maxStep = 5;
+int simulationStep = 0;
 
 void setup() {
   colorMode(HSB, 360, 100, 100);
@@ -66,8 +67,26 @@ void drawLegendItem(String text, int hue, int brightness, int row)
 }
 
 void draw() {
+  simulationStep++;
+
   for (int i = 0; i < walkers.length; i++) {
     walkers[i].step();
     walkers[i].display();
   }
+
+  drawStepCount();
+}
+
+void drawStepCount() {
+  int stepTextSize = 15;
+  String simStepText = Integer.toString(simulationStep);
+  int textWidth = (int)textWidth(simStepText);
+  int xLoc = width-10-textWidth;
+  int yLoc = height-10;
+  fill(0, 0, 100);
+  noStroke();
+  rect(xLoc, yLoc-stepTextSize, textWidth+5, stepTextSize+2);
+  fill(0, 0, 0);
+  textSize(stepTextSize);
+  text(simStepText, xLoc, yLoc);
 }
