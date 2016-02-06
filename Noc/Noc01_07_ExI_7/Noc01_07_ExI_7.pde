@@ -2,11 +2,13 @@
 // Exercise I.7 Introducing Perlin noise into I.6 Monte Carlo walker
 // Using vectors even though they haven't been introduced yet.
 
-Walker wExp, wLinear, wSimple;
+Walker[] walkers = new Walker[4];
 
 int expColor = 0;
 int linearColor = 220;
 int simpleColor = 60;
+int perlinColor = 100;
+
 int txtSize = 14;
 
 int dotSaturation = 80;
@@ -21,14 +23,21 @@ void setup() {
   background(0, 0, 100);
   drawLegendItem("Random walker Ex 1.7 with Monte Carlo", 0, 0, 0);
 
-  wSimple = new Walker(WalkMode.Simple, simpleColor, new SimpleRandom());
+  Walker w = new Walker(simpleColor, new SimpleRandom());
   drawLegendItem("Simple Random", simpleColor, dotBrightness, 2);
-
-  wLinear = new Walker(WalkMode.Monte_Linear, linearColor, new MonteCarloLinear());
+  walkers[0] = w;
+  
+  w = new Walker(linearColor, new MonteCarloLinear());
   drawLegendItem("Monte Carlo Linear", linearColor, dotBrightness, 3);
+  walkers[1] = w;
 
-  wExp = new Walker(WalkMode.Monte_Exponential, expColor, new MonteCarloExponential());
+  w = new Walker(expColor, new MonteCarloExponential());
   drawLegendItem("Monte Carlo Exponential", expColor, dotBrightness, 4);
+  walkers[2] = w;
+  
+  w = new Walker(perlinColor, new PerlinNoise(1,0.01));
+  drawLegendItem("Perlin Noise", perlinColor, dotBrightness, 5);
+  walkers[3] = w;
 }
 
 void drawLegendItem(String text, int hue, int brightness, int row)
@@ -39,10 +48,8 @@ void drawLegendItem(String text, int hue, int brightness, int row)
 }
 
 void draw() {
-  wExp.step();
-  wExp.display();
-  wLinear.step();
-  wLinear.display();
-  wSimple.step();
-  wSimple.display();
+  for (int i = 0; i < walkers.length; i++) {
+    walkers[i].step();
+    walkers[i].display();
+  }
 }

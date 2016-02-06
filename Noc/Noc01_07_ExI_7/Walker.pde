@@ -1,21 +1,13 @@
-enum WalkMode {
-  Simple,
-  Monte_Linear,
-  Monte_Exponential
-}
-
 class Walker {
   float x;
   float y;
   boolean isExponential;
   int walkerColor;
-  WalkMode mode;
   IRandom stepSizeGen;
   
-  Walker(WalkMode mode, int col, IRandom stepSizeGen) {
+  Walker(int col, IRandom stepSizeGen) {
     x = width/2;
     y = height/2;
-    this.mode = mode;
     this.walkerColor = col;
     this.stepSizeGen = stepSizeGen;
   }

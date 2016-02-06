@@ -34,3 +34,20 @@ class SimpleRandom implements IRandom {
     return random(1);
   }
 }
+
+class PerlinNoise implements IRandom {
+  float seed;
+  float step;
+  
+  PerlinNoise(float seed, float step)
+  {
+    this.seed = seed;
+    this.step = step;
+  }
+  
+  float getRandom() {
+    seed += step;
+    return noise(seed);
+  }
+  
+}
