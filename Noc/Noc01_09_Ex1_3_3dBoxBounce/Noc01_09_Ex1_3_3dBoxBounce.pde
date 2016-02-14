@@ -43,11 +43,24 @@ void draw() {
   // location of sphere is relative to box
   translate(-boxBounds.x/2, -boxBounds.y/2, -boxBounds.z/2);
   translate(location.x, location.y, location.z);
+  rotateY(rotation*2);
   sphere(sphereRadius);
   popMatrix();
   
   noFill();
   box(boxBounds.x,boxBounds.y,boxBounds.z);
+  
+  // draw one solid side
+  fill(200,0,0,75);
+  pushMatrix();
+  translate(-boxBounds.x/2, -boxBounds.y/2, boxBounds.z/2);
+  beginShape();
+  vertex(0,0,0);
+  vertex(boxBounds.x,0,0);
+  vertex(boxBounds.x,boxBounds.y,0);
+  vertex(0,boxBounds.y,0);
+  endShape(CLOSE);
+  popMatrix();
   
   
 
