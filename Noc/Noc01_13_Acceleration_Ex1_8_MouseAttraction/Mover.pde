@@ -48,7 +48,16 @@ class Mover {
       }
       
       dir.normalize();
-      dir.mult(noise(location.x)/distanceRange);
+      
+      if (mousePressed && mouseButton == LEFT) {
+        // proportional to distance
+        dir.mult(noise(location.x,location.y)*distanceRange/maxDistanceRange);
+      }
+      else
+      {
+        // inverse proportional to distance
+        dir.mult(noise(location.x,location.y)/distanceRange);
+      }
       acceleration = dir;
       oldTarget = newTarget;
     } else {

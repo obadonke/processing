@@ -5,8 +5,8 @@ import java.util.Random;
 
 int MAX_MOVERS = 40;
 int totalPixels;
-final float distanceStep = 20;
-final float maxDistanceRange = 10.0;
+final float distanceStep = 30;
+final float maxDistanceRange = 6.0;
 
 Mover[] mover = new Mover[MAX_MOVERS];
 Random generator = new Random();
