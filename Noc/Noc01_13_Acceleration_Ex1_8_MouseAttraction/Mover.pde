@@ -4,6 +4,9 @@
 // The amount of time before a Mover loses interest is randomised using a Gaussian so that
 // the majority of Movers will lose interest after about 300 frames.
 
+// WIP: Movers outside of the maxDistanceRange don't follow the mouse  - almost as though they don't see it.
+// I'd like to make it so they lose interest if they don't find the mouse again in the maxFrames... limit.
+
 class Mover {
   PVector location;
   PVector velocity;
@@ -12,6 +15,7 @@ class Mover {
   PVector oldTarget;
   int interestFrames;
   int maxFramesBeforeLoseInterest;
+  boolean everBeenInterested = false; // has mover ever taken an interest in the mouse?
   
   Mover() {
     location = new PVector(random(width), random(height));
@@ -20,7 +24,9 @@ class Mover {
     acceleration = new PVector(0, 0);
     oldTarget = new PVector(0, 0);
     maxFramesBeforeLoseInterest = 350+ (int)(generator.nextGaussian()*40);
-    interestFrames = maxFramesBeforeLoseInterest; // start with no interest in initial mouse position
+    
+    // start with no interest in initial mouse position
+    interestFrames = maxFramesBeforeLoseInterest;
   }
 
   void update() {
@@ -31,12 +37,13 @@ class Mover {
     float distanceRange = dir.mag()/distanceStep;
     if (distanceRange < 1) distanceRange = 1;
     
-    if (distanceRange < maxDistanceRange && (!sameTarget || (sameTarget && interestFrames < maxFramesBeforeLoseInterest))) {  
+    if (distanceRange < maxDistanceRange && (!sameTarget || (sameTarget && interestedInMouse()))) {  
       if (sameTarget) {
         interestFrames++;
       } else {
         interestFrames = 0;
       }
+      everBeenInterested = true;
       
       dir.normalize();
       dir.mult(noise(location.x)/distanceRange);
@@ -52,10 +59,21 @@ class Mover {
     location.add(velocity);
   }
   
+  boolean interestedInMouse() {
+    return interestFrames < maxFramesBeforeLoseInterest;
+  }
+  
   void display() {
     stroke(0);
     strokeWeight(2);
-    fill(240);
+    
+    if (interestedInMouse()) {
+     fill(100,0,255);
+    } else if (everBeenInterested) {
+      fill(255,255,0);
+    } else {
+      fill(240);
+    }
     ellipse(location.x, location.y, 24, 24);
   }
 
