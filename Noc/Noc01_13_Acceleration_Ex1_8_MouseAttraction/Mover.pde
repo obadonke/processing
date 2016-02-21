@@ -37,7 +37,7 @@ class Mover {
     
     PVector dir = PVector.sub(newTarget, location);
     float distanceRange = dir.mag()/distanceStep;
-    if (distanceRange < 1) distanceRange = 1;
+    if (distanceRange < 0.5) distanceRange = 0.5;
     
     if (distanceRange < maxDistanceRange && (!sameTarget || (sameTarget && interestedInMouse()))) {
       if (sameTarget) {
@@ -49,15 +49,9 @@ class Mover {
       
       dir.normalize();
       
-      if (mousePressed && mouseButton == LEFT) {
-        // proportional to distance
-        dir.mult(noise(location.x,location.y)*distanceRange/maxDistanceRange);
-      }
-      else
-      {
-        // inverse proportional to distance
-        dir.mult(noise(location.x,location.y)/distanceRange);
-      }
+      float distanceFactor = (mousePressed && mouseButton == LEFT) ? distanceRange/maxDistanceRange : 1.0/distanceRange;
+      dir.mult(noise(location.x,location.y)*distanceFactor);
+      
       acceleration = dir;
       oldTarget = newTarget;
     } else {

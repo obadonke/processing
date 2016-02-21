@@ -5,8 +5,8 @@ import java.util.Random;
 
 int MAX_MOVERS = 40;
 int totalPixels;
-final float distanceStep = 30;
-final float maxDistanceRange = 6.0;
+final float distanceStep = 15;
+final float maxDistanceRange = 12;
 
 Mover[] mover = new Mover[MAX_MOVERS];
 Random generator = new Random();
@@ -37,6 +37,11 @@ void draw() {
     mover[i].checkEdges();
     mover[i].display();
   }
+  
+  fill(255);
+  textSize(14);
+  text("LEFT MB = Attraction proportional to distance from mouse.",0,20);
+  text("NO BUTTON = inverse proportional.",0,40);
 }
 
 void drawDistanceSteps() {
