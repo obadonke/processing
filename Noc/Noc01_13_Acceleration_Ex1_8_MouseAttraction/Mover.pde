@@ -4,8 +4,9 @@
 // The amount of time before a Mover loses interest is randomised using a Gaussian so that
 // the majority of Movers will lose interest after about 300 frames.
 
-// WIP: Movers outside of the maxDistanceRange don't follow the mouse  - almost as though they don't see it.
-// I'd like to make it so they lose interest if they don't find the mouse again in the maxFrames... limit.
+// Movers outside of the maxDistanceRange don't follow the mouse as though they don't see it.
+// However, if they've taken an interest in the mouse they become agitated when they lose track of it.
+// They lose interest if they don't find the mouse again in the maxFrames... limit.
 
 class Mover {
   PVector location;
@@ -32,30 +33,37 @@ class Mover {
   void update() {
     PVector newTarget = new PVector(mouseX, mouseY);
     boolean sameTarget = (newTarget.x == oldTarget.x  && newTarget.y == oldTarget.y);
+    float agitation = 1;
     
     PVector dir = PVector.sub(newTarget, location);
     float distanceRange = dir.mag()/distanceStep;
     if (distanceRange < 1) distanceRange = 1;
     
-    if (distanceRange < maxDistanceRange && (!sameTarget || (sameTarget && interestedInMouse()))) {  
+    if (distanceRange < maxDistanceRange && (!sameTarget || (sameTarget && interestedInMouse()))) {
       if (sameTarget) {
         interestFrames++;
       } else {
         interestFrames = 0;
+        println(distanceRange);
+        everBeenInterested = true;
       }
-      everBeenInterested = true;
       
       dir.normalize();
       dir.mult(noise(location.x)/distanceRange);
       acceleration = dir;
       oldTarget = newTarget;
     } else {
+      if (interestedInMouse()) {
+        // keep incrementing the count
+        interestFrames++;
+        agitation = 1.5;
+      }
       acceleration = PVector.random2D();
-      acceleration.mult(0.3*noise(location.x,location.y));
+      acceleration.mult(agitation*0.3*noise(location.x,location.y));
     }
     
     velocity.add(acceleration);
-    velocity.limit(topSpeed);
+    velocity.limit(topSpeed*agitation);
     location.add(velocity);
   }
   

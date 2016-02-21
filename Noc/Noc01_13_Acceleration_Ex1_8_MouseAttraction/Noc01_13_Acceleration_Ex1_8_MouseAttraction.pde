@@ -5,8 +5,8 @@ import java.util.Random;
 
 int MAX_MOVERS = 40;
 int totalPixels;
-final int distanceStep = 40;
-final float maxDistanceRange = 2;
+final float distanceStep = 20;
+final float maxDistanceRange = 10.0;
 
 Mover[] mover = new Mover[MAX_MOVERS];
 Random generator = new Random();
@@ -44,6 +44,6 @@ void drawDistanceSteps() {
     stroke(240,240,0);
     strokeWeight(1);
     noFill();
-    ellipse(mouseX,mouseY, distanceStep*i, distanceStep*i);
+    ellipse(mouseX,mouseY, distanceStep*i*2, distanceStep*i*2);
   }
 }
