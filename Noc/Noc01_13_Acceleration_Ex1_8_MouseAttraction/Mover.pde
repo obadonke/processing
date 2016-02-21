@@ -44,7 +44,6 @@ class Mover {
         interestFrames++;
       } else {
         interestFrames = 0;
-        println(distanceRange);
         everBeenInterested = true;
       }
       
