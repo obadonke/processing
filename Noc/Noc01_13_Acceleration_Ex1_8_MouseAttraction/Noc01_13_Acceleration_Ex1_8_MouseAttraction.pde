@@ -28,10 +28,7 @@ void draw() {
 
   updateTheMovers();
 
-  fill(255);
-  textSize(14);
-  text("LEFT MB = Attraction proportional to distance from mouse.", 0, 20);
-  text("NO BUTTON = inverse proportional.", 0, 40);
+  drawHelpText();
 }
 
 void fadeBackground() {
@@ -59,4 +56,11 @@ void updateTheMovers() {
     mover[i].checkEdges();
     mover[i].display();
   }
+}
+
+void drawHelpText() {
+  fill(255);
+  textSize(14);
+  text("LEFT MB = Attraction proportional to distance from mouse.", 0, 20);
+  text("NO BUTTON = inverse proportional.", 0, 40);
 }
