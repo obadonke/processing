@@ -33,6 +33,10 @@ class Mover {
     } else if (location.x < 0) {
       location.x = width;
     }
+    
+    if (location.y > height) {
+      location.y = height;
+    }
   }
   
   void applyForce(PVector force)
