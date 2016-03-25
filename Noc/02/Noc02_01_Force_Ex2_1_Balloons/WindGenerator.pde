@@ -16,12 +16,8 @@ class WindGenerator {
     this.seed = seed;
   }
   
-  PVector getWindAt(PVector location) {
-    float amplitude = noise(1000+location.x,1000+location.y)*maxWind;
-    return new PVector(mapLocationToDirectionComponent(location.x)*amplitude, 0);
-  }
-  
-  float mapLocationToDirectionComponent(float location) {
-    return map(noise(seed + location/noiseResolution),0,1,-1,1);
+  PVector getWindForce() {
+    float amplitude = map(noise((float)(seed + frameCount)/noiseResolution),0,1,-1,1)*maxWind;
+    return new PVector(amplitude, 0);
   }
 }

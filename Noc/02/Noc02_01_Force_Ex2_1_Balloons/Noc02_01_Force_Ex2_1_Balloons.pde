@@ -2,11 +2,12 @@
 
 import java.util.Random;
 
-final int MAX_BALLOONS = 20;
+final int MaxBalloons = 20;
 final int CeilingHeight = 26;
-WindGenerator windGenerator = new WindGenerator(0.3, 100);
+WindGenerator windGenerator = new WindGenerator(0.3, 50);
+final float CoefficientOfRestitution = 0.4;
 
-Balloon[] balloons = new Balloon[MAX_BALLOONS];
+Balloon[] balloons = new Balloon[MaxBalloons];
 Random generator = new Random();
 
 void setup() {
@@ -26,6 +27,7 @@ void draw() {
   updateTheBalloons();
 
   drawHelpText();
+  
 }
 
 void drawCeiling() {
@@ -35,7 +37,7 @@ void drawCeiling() {
 }
 
 void updateTheBalloons() {
-  for (int i = 0; i < MAX_BALLOONS; i++) {
+  for (int i = 0; i < balloons.length; i++) {
     Balloon balloon = balloons[i];
     
     if (balloonCollidesWithCeiling(balloon))
@@ -58,7 +60,7 @@ void drawHelpText() {
 
 void resetBalloons() {
   windGenerator.setSeed(random(10000));
-  for (int i = 0; i < MAX_BALLOONS; i++) {
+  for (int i = 0; i < balloons.length; i++) {
     balloons[i] = new Balloon();
   }
 }
@@ -69,11 +71,11 @@ boolean balloonCollidesWithCeiling(Balloon balloon) {
 
 void bounceBalloonOffCeiling(Balloon balloon) {
   balloon.location.y = CeilingHeight+balloon.radius;
-  PVector reaction = new PVector(0,-balloon.velocity.y*1.2);
+  PVector reaction = new PVector(0,-balloon.velocity.y*(1+CoefficientOfRestitution));
   balloon.applyForce(reaction);
 }
 
 void applyWindToBalloon(Balloon balloon) {
-  PVector windForce = windGenerator.getWindAt(balloon.location);
+  PVector windForce = windGenerator.getWindForce();
   balloon.applyForce(windForce);
 }
