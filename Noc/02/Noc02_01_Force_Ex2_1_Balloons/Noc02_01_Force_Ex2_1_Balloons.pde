@@ -5,7 +5,6 @@ import java.util.Random;
 final int MaxBalloons = 20;
 final int CeilingHeight = 26;
 WindGenerator windGenerator = new WindGenerator(0.3, 50);
-final float CoefficientOfRestitution = 0.4;
 
 Balloon[] balloons = new Balloon[MaxBalloons];
 Random generator = new Random();
@@ -42,7 +41,7 @@ void updateTheBalloons() {
     
     if (balloonCollidesWithCeiling(balloon))
     {
-      bounceBalloonOffCeiling(balloon);
+      balloon.bounceOffCeiling(CeilingHeight);
     }
     
     applyWindToBalloon(balloon);
@@ -69,11 +68,6 @@ boolean balloonCollidesWithCeiling(Balloon balloon) {
   return balloon.location.y - balloon.radius <= CeilingHeight;
 }
 
-void bounceBalloonOffCeiling(Balloon balloon) {
-  balloon.location.y = CeilingHeight+balloon.radius;
-  PVector reaction = new PVector(0,-balloon.velocity.y*(1+CoefficientOfRestitution));
-  balloon.applyForce(reaction);
-}
 
 void applyWindToBalloon(Balloon balloon) {
   PVector windForce = windGenerator.getWindForce();
