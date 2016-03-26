@@ -1,29 +1,27 @@
 // Nature of Code - Exercise 2.3 - Page 77
 
 class Ball extends Mover {
-  PVector heliumForce = new PVector(0, -random(0.01, 0.05));
   float dragFactor = 0.01;
-  int collisions;
-  final int MaxCollisions = 100;
   final float CoefficientOfRestitution = 1;
-
-  Ball() {
+  Random generator;
+  
+  Ball(Random generator) {
     super();
-
+    this.generator = generator;
+    
     reset();
   }
 
   void reset() {    
-    // start somewhere along bottom row of screen
     velocity = new PVector(0, 0);
     location = new PVector(random(0, width), random(30,60));
-    collisions = 0;
-    mass = random(1,2);
+    mass = 1.5f + (float)(generator.nextGaussian()*0.4);
   }
 
   void update() {
     applyForces();
     super.update();
+    checkEdges();
   }
 
   void applyForces() {
@@ -46,14 +44,6 @@ class Ball extends Mover {
     if (location.y > height) {
       location.y = height;
       velocity.y *= -CoefficientOfRestitution;
-    }
-  }
-
-  void collisionDetected() {
-    collisions++;
-
-    if (collisions > MaxCollisions) {
-      reset();
     }
   }
 }

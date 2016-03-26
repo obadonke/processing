@@ -11,13 +11,12 @@ Random generator = new Random();
 void setup() {
   size(640, 480);
   frameRate(30);
-  resetBalls();
+  createTheBalls();
 }
 
 void draw() {
-  //background(255);
   fadeBackground();
-  
+
   if (mousePressed)
   {
     resetBalls();
@@ -26,21 +25,19 @@ void draw() {
   updateTheBalls();
 
   drawHelpText();
-  
 }
 
 void drawCeiling() {
   fill(0);
   noStroke();
-  rect(0,CeilingHeight,width,-2);
+  rect(0, CeilingHeight, width, -2);
 }
 
 void updateTheBalls() {
   for (int i = 0; i < balls.length; i++) {
     Ball ball = balls[i];
-        
+
     ball.update();
-    ball.checkEdges();
     ball.display();
   }
 }
@@ -51,9 +48,16 @@ void drawHelpText() {
   text("ANY MB = Reset the balls.", 0, 15);
 }
 
+void createTheBalls() {
+  for (int i = 0; i < balls.length; i++) {
+    Ball b = new Ball(generator);
+    balls[i] = b;
+  }
+}
+
 void resetBalls() {
   for (int i = 0; i < balls.length; i++) {
-    balls[i] = new Ball();
+    balls[i].reset();
   }
 }
 
