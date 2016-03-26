@@ -5,7 +5,7 @@ class Ball extends Mover {
   final float CoefficientOfRestitution = 1;
   Random generator;
   final float MaxWallRepulsionForce = 0.5;
-  final float MaxMouseRepulsionForce = 0.5;
+  final float MaxMouseRepulsionForce = 2;
   final float RepulsionExponent = 3;
   final float BallMassMean = 3;
   final float BallMassStdDeviation = 0.6;
@@ -41,7 +41,10 @@ class Ball extends Mover {
     applyForce(gravity);
     
     applyWallRepulsion();
-    applyMouseRepulsion();
+    
+    if (mousePressed) {
+      applyMouseRepulsion();
+    }
   }
 
   void applyWallRepulsion() {

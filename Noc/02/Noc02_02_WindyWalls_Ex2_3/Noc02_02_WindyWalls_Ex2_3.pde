@@ -2,7 +2,7 @@
 
 import java.util.Random;
 
-final int MaxBalls = 20;
+final int MaxBalls = 25;
 final int RepulsionRange = 60;
 
 Ball[] balls = new Ball[MaxBalls];
@@ -17,11 +17,7 @@ void setup() {
 void draw() {
   fadeBackground();
   drawRepulsionRange();
-  
-  if (mousePressed)
-  {
-    resetBalls();
-  }
+
   updateTheBalls();
 
   drawHelpText();
@@ -39,19 +35,13 @@ void updateTheBalls() {
 void drawHelpText() {
   fill(0);
   textSize(14);
-  text("ANY MB = Reset the balls.", 0, 15);
+  text("ANY MB = Repel from mouse X.", 0, 15);
 }
 
 void createTheBalls() {
   for (int i = 0; i < balls.length; i++) {
     Ball b = new Ball(generator, RepulsionRange);
     balls[i] = b;
-  }
-}
-
-void resetBalls() {
-  for (int i = 0; i < balls.length; i++) {
-    balls[i].reset();
   }
 }
 
@@ -70,12 +60,14 @@ void drawRepulsionRange() {
   stroke(125);
   drawFullHeightLine(RepulsionRange);
   drawFullHeightLine(width-RepulsionRange);
-  
-  stroke(250,125,0);
-  drawFullHeightLine(mouseX-RepulsionRange);
-  drawFullHeightLine(mouseX+RepulsionRange);
+
+  if (mousePressed) {
+    stroke(250, 125, 0);
+    drawFullHeightLine(mouseX-RepulsionRange);
+    drawFullHeightLine(mouseX+RepulsionRange);
+  }
 }
 
 void drawFullHeightLine(int x) {
-  line(x,0,x,height);
+  line(x, 0, x, height);
 }
