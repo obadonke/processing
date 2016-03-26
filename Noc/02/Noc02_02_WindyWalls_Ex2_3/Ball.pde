@@ -28,7 +28,8 @@ class Ball extends Mover {
     PVector wind = new PVector(0.01, 0);
     applyForce(wind);
 
-    PVector gravity = new PVector(0, 0.1);
+    // gravity is proportional to mass
+    PVector gravity = new PVector(0, 0.1*mass);
     applyForce(gravity);
   }
 

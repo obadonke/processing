@@ -21,16 +21,9 @@ void draw() {
   {
     resetBalls();
   }
-  drawCeiling();
   updateTheBalls();
 
   drawHelpText();
-}
-
-void drawCeiling() {
-  fill(0);
-  noStroke();
-  rect(0, CeilingHeight, width, -2);
 }
 
 void updateTheBalls() {
