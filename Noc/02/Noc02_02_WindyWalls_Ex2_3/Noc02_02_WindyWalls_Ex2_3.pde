@@ -66,9 +66,16 @@ void fadeBackground() {
   updatePixels();
 }
 
-void drawRepulsionRange()
-{
+void drawRepulsionRange() {
   stroke(125);
-  line(RepulsionRange,0,RepulsionRange,height);
-  line(width-RepulsionRange,0,width-RepulsionRange,height);
+  drawFullHeightLine(RepulsionRange);
+  drawFullHeightLine(width-RepulsionRange);
+  
+  stroke(250,125,0);
+  drawFullHeightLine(mouseX-RepulsionRange);
+  drawFullHeightLine(mouseX+RepulsionRange);
+}
+
+void drawFullHeightLine(int x) {
+  line(x,0,x,height);
 }

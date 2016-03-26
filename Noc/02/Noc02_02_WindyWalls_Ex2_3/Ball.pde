@@ -4,8 +4,12 @@ class Ball extends Mover {
   float dragFactor = 0.01;
   final float CoefficientOfRestitution = 1;
   Random generator;
-  final float MaxRepulsionForce = 0.5;
+  final float MaxWallRepulsionForce = 0.5;
+  final float MaxMouseRepulsionForce = 0.5;
   final float RepulsionExponent = 3;
+  final float BallMassMean = 3;
+  final float BallMassStdDeviation = 0.6;
+  
   final PVector WindForce = new PVector(0.01,0);
   
   int repulsionRange;
@@ -20,7 +24,7 @@ class Ball extends Mover {
   void reset() {    
     velocity = new PVector(0, 0);
     location = new PVector(random(0, width), random(30,60));
-    mass = 1.5f + (float)(generator.nextGaussian()*0.4);
+    mass = BallMassMean + (float)(generator.nextGaussian()*BallMassStdDeviation);
   }
 
   void update() {
@@ -37,30 +41,54 @@ class Ball extends Mover {
     applyForce(gravity);
     
     applyWallRepulsion();
+    applyMouseRepulsion();
   }
 
   void applyWallRepulsion() {
-    float distanceFromWall = location.x;
-    float repulsionSign = 1;
+    float wallLocation;
+    PVector direction;
     
-    if (location.x > RepulsionRange) {
-      distanceFromWall = width-location.x;
-      repulsionSign = -1;
+    if (location.x < RepulsionRange) {
+      wallLocation = 0;
+      direction = new PVector(1.0,0);
+    } else {
+      wallLocation = width;
+      direction = new PVector(-1.0,0);
+    }
+       
+    applyRepulsionBasedOnDistance(abs(location.x - wallLocation), direction, MaxWallRepulsionForce);
+  }
+  
+  void applyMouseRepulsion() {
+    PVector direction;
+    
+    float distanceFromMouse = abs(location.x - mouseX);
+    if (distanceFromMouse < 0.001) {
+      direction = new PVector(1.0,0);  // go right if in doubt
+    } else if (location.x < mouseX) {
+      direction = new PVector(-1,0);
+    } else {
+      direction = new PVector(1.0,0);
     }
     
-    if (distanceFromWall >= RepulsionRange) return;
+    applyRepulsionBasedOnDistance(distanceFromMouse,direction,MaxMouseRepulsionForce);
     
-    float magnitude = pow((RepulsionRange-distanceFromWall)/RepulsionRange,RepulsionExponent)*MaxRepulsionForce*repulsionSign;
-    applyForce(new PVector(magnitude,0));  
+  }
+     
+  void applyRepulsionBasedOnDistance(float distance, PVector direction, float maxForce) {
+    if (distance >= RepulsionRange) return;
+    
+    float magnitude = pow((RepulsionRange-distance)/RepulsionRange,RepulsionExponent)*maxForce;
+    if (magnitude > 0.001) applyForce(PVector.mult(direction,magnitude));  
   }
   
   void checkEdges() {
     if (location.x > width) {
-      location.x = width;
-      velocity.x *= -CoefficientOfRestitution;
+      location.x = width-5;
+      velocity.x = -CoefficientOfRestitution*abs(velocity.x);
     } else if (location.x < 0) {
-      location.x = 0;
-      velocity.x *= -CoefficientOfRestitution;
+      location.x = 5;
+      velocity.x = CoefficientOfRestitution*abs(velocity.x);
     }
     
     if (location.y > height) {
