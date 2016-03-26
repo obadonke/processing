@@ -3,20 +3,21 @@
 import java.util.Random;
 
 final int MaxBalls = 20;
-final int CeilingHeight = 26;
+final int RepulsionRange = 60;
 
 Ball[] balls = new Ball[MaxBalls];
 Random generator = new Random();
 
 void setup() {
-  size(640, 480);
-  frameRate(30);
+  size(640, 360);
+  frameRate(60);
   createTheBalls();
 }
 
 void draw() {
   fadeBackground();
-
+  drawRepulsionRange();
+  
   if (mousePressed)
   {
     resetBalls();
@@ -43,7 +44,7 @@ void drawHelpText() {
 
 void createTheBalls() {
   for (int i = 0; i < balls.length; i++) {
-    Ball b = new Ball(generator);
+    Ball b = new Ball(generator, RepulsionRange);
     balls[i] = b;
   }
 }
@@ -63,4 +64,11 @@ void fadeBackground() {
     pixels[i] = color(shade, 0, shade);
   }
   updatePixels();
+}
+
+void drawRepulsionRange()
+{
+  stroke(125);
+  line(RepulsionRange,0,RepulsionRange,height);
+  line(width-RepulsionRange,0,width-RepulsionRange,height);
 }

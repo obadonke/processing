@@ -1,14 +1,19 @@
 // Nature of Code - Exercise 2.3 - Page 77
-
+// Ball is repelled from the wall.
 class Ball extends Mover {
   float dragFactor = 0.01;
   final float CoefficientOfRestitution = 1;
   Random generator;
+  final float MaxRepulsionForce = 0.5;
+  final float RepulsionExponent = 3;
+  final PVector WindForce = new PVector(0.01,0);
   
-  Ball(Random generator) {
+  int repulsionRange;
+  
+  Ball(Random generator, int repulsionRange) {
     super();
     this.generator = generator;
-    
+    this.repulsionRange = repulsionRange;
     reset();
   }
 
@@ -25,14 +30,30 @@ class Ball extends Mover {
   }
 
   void applyForces() {
-    PVector wind = new PVector(0.01, 0);
-    applyForce(wind);
+    applyForce(WindForce);
 
     // gravity is proportional to mass
     PVector gravity = new PVector(0, 0.1*mass);
     applyForce(gravity);
+    
+    applyWallRepulsion();
   }
 
+  void applyWallRepulsion() {
+    float distanceFromWall = location.x;
+    float repulsionSign = 1;
+    
+    if (location.x > RepulsionRange) {
+      distanceFromWall = width-location.x;
+      repulsionSign = -1;
+    }
+    
+    if (distanceFromWall >= RepulsionRange) return;
+    
+    float magnitude = pow((RepulsionRange-distanceFromWall)/RepulsionRange,RepulsionExponent)*MaxRepulsionForce*repulsionSign;
+    applyForce(new PVector(magnitude,0));  
+  }
+  
   void checkEdges() {
     if (location.x > width) {
       location.x = width;
