@@ -10,7 +10,7 @@ class Ball extends Mover {
   final float BallMassMean = 3;
   final float BallMassStdDeviation = 0.6;
   
-  final PVector WindForce = new PVector(0.01,0);
+  final PVector WindForce = new PVector(0.02,0);
   
   int repulsionRange;
   
@@ -41,12 +41,20 @@ class Ball extends Mover {
     applyForce(gravity);
     
     applyWallRepulsion();
-    
-    if (mousePressed) {
-      applyMouseRepulsion();
-    }
   }
 
+  void applyFriction(float coefficient) {
+    if (abs(coefficient) < 0.001) return;
+    
+    PVector friction = velocity.copy();
+    // For now we're assuming friction applies in every direction equally.
+    friction.mult(-1);
+    friction.normalize();
+    friction.mult(coefficient);
+    
+    applyForce(friction);
+  }
+  
   void applyWallRepulsion() {
     float wallLocation;
     PVector direction;
@@ -61,22 +69,6 @@ class Ball extends Mover {
        
     applyRepulsionBasedOnDistance(abs(location.x - wallLocation), direction, MaxWallRepulsionForce);
   }
-  
-  void applyMouseRepulsion() {
-    PVector direction;
-    
-    float distanceFromMouse = abs(location.x - mouseX);
-    if (distanceFromMouse < 0.001) {
-      direction = new PVector(1.0,0);  // go right if in doubt
-    } else if (location.x < mouseX) {
-      direction = new PVector(-1,0);
-    } else {
-      direction = new PVector(1.0,0);
-    }
-    
-    applyRepulsionBasedOnDistance(distanceFromMouse,direction,MaxMouseRepulsionForce);
-    
-  }
      
   void applyRepulsionBasedOnDistance(float distance, PVector direction, float maxForce) {
     if (distance >= RepulsionRange) return;
@@ -87,16 +79,21 @@ class Ball extends Mover {
   
   void checkEdges() {
     if (location.x > width) {
-      location.x = width-5;
+      location.x = width-1;
       velocity.x = -CoefficientOfRestitution*abs(velocity.x);
     } else if (location.x < 0) {
-      location.x = 5;
+      location.x = 1;
       velocity.x = CoefficientOfRestitution*abs(velocity.x);
     }
     
     if (location.y > height) {
       location.y = height;
-      velocity.y *= -CoefficientOfRestitution;
+      if (abs(velocity.y) > 0.01) {
+        velocity.y *= -CoefficientOfRestitution;
+      }
+      else {
+        velocity.y = 0;
+      }
     }
   }
 }

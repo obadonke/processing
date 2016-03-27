@@ -5,9 +5,11 @@ import java.util.Random;
 
 final int MaxBalls = 25;
 final int RepulsionRange = 60;
+final float FrictionCoefficient = 0.1;
 
 Ball[] balls = new Ball[MaxBalls];
 Random generator = new Random();
+FrictionWellList frictionWells = new FrictionWellList();
 
 void setup() {
   size(640, 360);
@@ -18,6 +20,7 @@ void setup() {
 void draw() {
   fadeBackground();
   drawRepulsionRange();
+  drawFrictionWells();
 
   updateTheBalls();
 
@@ -25,9 +28,20 @@ void draw() {
 }
 
 void updateTheBalls() {
+
+  if (mousePressed) {
+    PVector mouseLocation = new PVector(mouseX, mouseY);
+    if (mouseButton == LEFT) {
+      float coefficient = (keyPressed && keyCode == SHIFT) ? -FrictionCoefficient*.5 : FrictionCoefficient; 
+      frictionWells.addAt(mouseLocation, coefficient);
+    } else if (mouseButton == RIGHT) {
+      frictionWells.removeAt(mouseLocation);
+    }
+  }
+
   for (int i = 0; i < balls.length; i++) {
     Ball ball = balls[i];
-
+    ball.applyFriction(frictionWells.sumFrictionCoefficientAt(ball.location));
     ball.update();
     ball.display();
   }
@@ -36,7 +50,7 @@ void updateTheBalls() {
 void drawHelpText() {
   fill(0);
   textSize(14);
-  text("ANY MB = No op.", 0, 15);
+  text("Left MB = add a friction well. SHIFT LMB = Propel. Right MB = remove a friction well", 0, 15);
 }
 
 void createTheBalls() {
@@ -55,6 +69,10 @@ void fadeBackground() {
     pixels[i] = color(shade, 0, shade);
   }
   updatePixels();
+}
+
+void drawFrictionWells() {
+  frictionWells.display();
 }
 
 void drawRepulsionRange() {

@@ -28,6 +28,7 @@ class Mover {
     fill(175);
     int drawSize = (int)(mass*DisplayScale);
     ellipse(location.x, location.y, drawSize, drawSize);
+    ellipse(location.x, location.y, 1, 1);
   }
   
   void applyForce(PVector force)
