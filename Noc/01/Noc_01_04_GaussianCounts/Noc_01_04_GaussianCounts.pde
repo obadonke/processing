@@ -8,14 +8,14 @@ Random generator;
 
 void setup() {
   size(640, 240);
-  colorMode(HSB,360,100,100);
+  colorMode(HSB, 360, 100, 100);
   randomCounts = new int[mean*2+1];
   generator = new Random();
 }
 
 void draw() {
-  baseColor = int(map(mouseX,0,width,0,360));
-  background(baseColor,13,20);
+  baseColor = int(map(mouseX, 0, width, 0, 360));
+  background(baseColor, 13, 20);
 
   int index = (int)(mean + generator.nextGaussian()*sdeviation);
   randomCounts[index]++;
@@ -30,8 +30,8 @@ void draw() {
 
 void setColor(int index) {
   int gray = int(map(index, 0, randomCounts.length-1, 70, 100));
-  stroke(baseColor,70,gray-20);
-  fill(baseColor,70,gray);
+  stroke(baseColor, 70, gray-20);
+  fill(baseColor, 70, gray);
 }
 
 void drawSimpleCount() {
@@ -43,15 +43,18 @@ void drawSimpleCount() {
 }
 
 void drawScaledCount() {
-  float maxCount = 1;
-  float minCount = randomCounts[0];
+  int smallestBarHeight = 0;
+  int maxBarExtension = height - (smallestBarHeight+2);
+
+  float maxCount;
+  float minCount = maxCount = randomCounts[0];
 
   for (int x = 0; x < randomCounts.length; x++) {
     float curCount = randomCounts[x];
     if (curCount > maxCount) {
       maxCount = curCount;
     } else if (curCount < minCount) {
-      minCount = curCount/3;
+      minCount = curCount;
     }
   }
 
@@ -61,7 +64,7 @@ void drawScaledCount() {
   for (int x = 0; x < randomCounts.length; x++) {
     setColor(x);
     float curDiff = randomCounts[x]-minCount;
-    float curHeight = (maxDiff == 0) ? height : height*curDiff/maxDiff;
+    float curHeight = (maxDiff == 0) ? height : smallestBarHeight + (maxBarExtension*curDiff/maxDiff);
 
     rect(x*w, height-curHeight, w-1, curHeight);
   }
