@@ -1,7 +1,8 @@
 Walker w;
 
 void setup() {
-  size(480, 240);
+  colorMode(HSB,360,100,100);
+  size(480, 480);
   w = new Walker();
   background(255);
 }
