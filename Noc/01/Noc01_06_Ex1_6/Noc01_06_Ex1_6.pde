@@ -11,7 +11,7 @@ int simpleColor = 60;
 int dotSaturation = 80;
 int dotBrightness = 80;
 int dotSize = 3;
-int maxStep = 5;
+int maxStep = 8;
 
 void setup() {
   colorMode(HSB,360,100,100);
