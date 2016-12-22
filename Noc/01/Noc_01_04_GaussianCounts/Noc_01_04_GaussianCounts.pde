@@ -66,6 +66,6 @@ void drawScaledCount() {
     float curDiff = randomCounts[x]-minCount;
     float curHeight = (maxDiff == 0) ? height : smallestBarHeight + (maxBarExtension*curDiff/maxDiff);
 
-    rect(x*w, height-curHeight, w-1, curHeight);
+    rect(x*w, height-curHeight, w-1, curHeight, 4, 4, 0, 0);
   }
 }
