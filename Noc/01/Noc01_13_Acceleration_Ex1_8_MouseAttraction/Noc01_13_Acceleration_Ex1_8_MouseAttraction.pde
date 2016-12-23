@@ -61,6 +61,6 @@ void updateTheMovers() {
 void drawHelpText() {
   fill(255);
   textSize(14);
-  text("LEFT MB = Attraction proportional to distance from mouse.", 0, 20);
-  text("NO BUTTON = inverse proportional.", 0, 40);
+  text("NO MB = Attraction proportional to distance from mouse.", 0, 20);
+  text("LEFT MB = Inverse.", 0, 40);
 }

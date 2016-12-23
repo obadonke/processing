@@ -17,15 +17,17 @@ class Mover {
   int interestFrames;
   int maxFramesBeforeLoseInterest;
   boolean everBeenInterested = false; // has mover ever taken an interest in the mouse?
-  
+  float noiseOffset;
+
   Mover() {
     location = new PVector(random(width), random(height));
     velocity = new PVector(0, 0);
-    topSpeed = 3;
+    topSpeed = 2;
     acceleration = new PVector(0, 0);
     oldTarget = new PVector(0, 0);
     maxFramesBeforeLoseInterest = 350+ (int)(generator.nextGaussian()*40);
-    
+    noiseOffset = random(10000);
+
     // start with no interest in initial mouse position
     interestFrames = maxFramesBeforeLoseInterest;
   }
@@ -34,11 +36,11 @@ class Mover {
     PVector newTarget = new PVector(mouseX, mouseY);
     boolean sameTarget = (newTarget.x == oldTarget.x  && newTarget.y == oldTarget.y);
     float agitation = 1;
-    
+
     PVector dir = PVector.sub(newTarget, location);
     float distanceRange = dir.mag()/distanceStep;
     if (distanceRange < 0.5) distanceRange = 0.5;
-    
+
     if (distanceRange < maxDistanceRange && (!sameTarget || (sameTarget && interestedInMouse()))) {
       if (sameTarget) {
         interestFrames++;
@@ -46,12 +48,14 @@ class Mover {
         interestFrames = 0;
         everBeenInterested = true;
       }
-      
+
       dir.normalize();
+
+      float distanceFactor = distanceRange/maxDistanceRange;
+      if (mousePressed && mouseButton == LEFT) distanceFactor = -1/distanceFactor;
       
-      float distanceFactor = (mousePressed && mouseButton == LEFT) ? distanceRange/maxDistanceRange : 1.0/distanceRange;
-      dir.mult(noise(location.x,location.y)*distanceFactor);
-      
+      dir.mult(2*distanceFactor);
+
       acceleration = dir;
       oldTarget = newTarget;
     } else {
@@ -60,27 +64,28 @@ class Mover {
         interestFrames++;
         agitation = 1.5;
       }
-      acceleration = PVector.random2D();
-      acceleration.mult(agitation*0.3*noise(location.x,location.y));
+      noiseOffset+=0.01;
+      acceleration = new PVector(noise2scalar(noiseOffset), noise2scalar(noiseOffset+1000));
+      acceleration.mult(agitation*0.3);
     }
-    
+
     velocity.add(acceleration);
     velocity.limit(topSpeed*agitation);
     location.add(velocity);
   }
-  
+
   boolean interestedInMouse() {
     return interestFrames < maxFramesBeforeLoseInterest;
   }
-  
+
   void display() {
     stroke(0);
     strokeWeight(2);
-    
+
     if (interestedInMouse()) {
-     fill(100,0,255);
+      fill(100, 0, 255);
     } else if (everBeenInterested) {
-      fill(255,255,0);
+      fill(255, 255, 0);
     } else {
       fill(240);
     }
@@ -99,5 +104,9 @@ class Mover {
     } else if (location.y < 0) {
       location.y = height;
     }
+  }
+
+  float noise2scalar(float offset) {
+    return map(noise(offset), 0, 1, -0.2, 0.2);
   }
 }
