@@ -5,7 +5,7 @@ PVector location;
 PVector velocity;
 int sphereRadius = 32;
 float rotation = PI/6;
-float rotationDelta = PI/360;
+float rotationDelta = PI/1080;
 
 void setup() {
   size(800, 600,P3D);
@@ -28,12 +28,13 @@ void draw() {
     velocity.z = velocity.z * -1;
   }
   
-  sphereDetail(7);
+  sphereDetail(8);
   camera(0,0,-boxBounds.z*2,0,0,0,0,1,0);
   perspective();
 
   rotateY(rotation);
   rotateX(PI/6);
+  rotateZ(rotation);
   rotation += rotationDelta;
   
   stroke(0);
