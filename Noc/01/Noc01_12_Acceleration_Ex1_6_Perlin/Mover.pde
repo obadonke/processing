@@ -5,22 +5,27 @@ class Mover {
   PVector velocity;
   PVector acceleration;
   float topSpeed;
-    
+  float noiseOffset;
+  
   Mover() {
     location = new PVector(random(width), random(height));
     velocity = new PVector(0,0);
-    topSpeed = 3;
+    topSpeed = 2;
+    noiseOffset = random(10000);
   }
   
   void update() {
-    acceleration = PVector.random2D();
-    acceleration.mult(noise(location.x,location.y));
+    acceleration = new PVector(noise2scalar(noiseOffset),noise2scalar(noiseOffset+1000));
+    noiseOffset+=0.01;
     
     velocity.add(acceleration);
     velocity.limit(topSpeed);
     location.add(velocity);
   }
 
+  float noise2scalar(float offset) {
+    return map(noise(offset),0,1,-0.1,0.1);
+  }
   void display() {
     stroke(0);
     strokeWeight(2);

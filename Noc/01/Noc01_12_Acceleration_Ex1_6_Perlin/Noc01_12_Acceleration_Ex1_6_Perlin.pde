@@ -18,7 +18,8 @@ void draw() {
   loadPixels();
   for (int i = 0; i < totalPixels; i++) {
     int shade = pixels[i] >> 16 & 0xFF;
-    if (shade < 254) shade += 1;
+    if (shade < 180) shade += 1;
+    if (shade > 220) shade -= 1;
     pixels[i] = color(shade,0,0);
   }
   updatePixels();
