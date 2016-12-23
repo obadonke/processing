@@ -1,12 +1,17 @@
 // Nature of Code - page 46
+import java.util.Random;
 
 class Mover {
   PVector location;
   PVector velocity;
-
+  int size;
+  Random rand;
+  
   Mover() {
     location = new PVector(random(width), random(height));
-    velocity = new PVector(random(-2,2), random(-2,2));
+    velocity = PVector.random2D().mult(0.5+random(2));
+    rand = new Random();
+    size = 16+(int)(rand.nextGaussian()*2);
   }
   
   void update() {
@@ -14,9 +19,9 @@ class Mover {
   }
 
   void display() {
-    stroke(0);
+    stroke(10,10,100);
     fill(240,240,0);
-    ellipse(location.x, location.y, 16, 16);
+    ellipse(location.x, location.y, size, size);
   }
   
   void checkEdges() {
