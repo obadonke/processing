@@ -4,26 +4,25 @@ class Mover {
   PVector location;
   PVector velocity;
   PVector acceleration;
-  float topSpeed;
+  int topGear;
   int gear;
   
   Mover() {
     location = new PVector(random(width), random(height));
     velocity = new PVector(0,0);
     acceleration = new PVector(random(-0.05,0.05), random(-0.05,0.05));
-    topSpeed = 5;
+    topGear = 500;
     gear = 0;
   }
   
   void update() {
-    if (keyPressed && key == CODED && keyCode == UP && gear < 50) {
+    if (keyPressed && key == CODED && keyCode == UP && gear < topGear) {
       velocity.add(acceleration);
       ++gear;
     } else if (keyPressed && key == CODED && keyCode == DOWN && gear > 0) {
       velocity.sub(acceleration);
       --gear;
     }
-    velocity.limit(topSpeed);
     location.add(velocity);
   }
 
