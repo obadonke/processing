@@ -1,5 +1,5 @@
 // Nature of Code - Exercise 2.3 - Page 77
-// Ball is repelled from the wall.
+// Ball is repelled from the wall and  from mouse.
 class Ball extends Mover {
   float dragFactor = 0.01;
   final float CoefficientOfRestitution = 1;
