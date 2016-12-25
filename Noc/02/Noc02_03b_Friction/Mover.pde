@@ -15,7 +15,7 @@ class Mover {
     velocity = new PVector(0, 0);
     acceleration = new PVector(0, 0);
     mass = DefaultMass;
-    colour = color(100,100,100);
+    colour = color(200,50,50);
   }
 
   void update() {
@@ -36,6 +36,18 @@ class Mover {
   void applyForce(PVector force)
   {
     acceleration.add(PVector.div(force,mass));
+  }
+  
+  void applyFriction(float coefficient) {
+    if (abs(coefficient) < 0.001) return;
+    
+    PVector friction = velocity.copy();
+    // For now we're assuming friction applies in every direction equally.
+    friction.mult(-1);
+    friction.normalize();
+    friction.mult(coefficient);
+    
+    applyForce(friction);
   }
   
   void resetAcceleration() {

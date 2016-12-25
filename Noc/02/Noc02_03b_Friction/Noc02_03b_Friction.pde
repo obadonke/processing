@@ -4,7 +4,6 @@
 import java.util.Random;
 
 final int MaxBalls = 25;
-final int RepulsionRange = 60;
 final float FrictionCoefficient = 0.3;
 
 Ball[] balls = new Ball[MaxBalls];
@@ -12,19 +11,18 @@ Random generator = new Random();
 FrictionWellList frictionWells = new FrictionWellList();
 
 void setup() {
-  size(640, 360);
+  size(640, 640);
   frameRate(60);
   createTheBalls();
 }
 
 void draw() {
   fadeBackground();
-  drawRepulsionRange();
   drawFrictionWells();
 
   updateTheBalls();
 
-  drawHelpText();
+  //drawHelpText();
 }
 
 void updateTheBalls() {
@@ -41,7 +39,7 @@ void updateTheBalls() {
 
   for (int i = 0; i < balls.length; i++) {
     Ball ball = balls[i];
-    ball.applyFriction(frictionWells.sumFrictionCoefficientAt(ball.location));
+    //ball.applyFriction(frictionWells.sumFrictionCoefficientAt(ball.location));
     ball.update();
     ball.display();
   }
@@ -55,7 +53,7 @@ void drawHelpText() {
 
 void createTheBalls() {
   for (int i = 0; i < balls.length; i++) {
-    Ball b = new Ball(generator, RepulsionRange);
+    Ball b = new Ball(generator);
     balls[i] = b;
   }
 }
@@ -64,21 +62,18 @@ void fadeBackground() {
   int totalPixels = width*height;
   loadPixels();
   for (int i = 0; i < totalPixels; i++) {
-    int shade = pixels[i] >> 16 & 0xFF;
-    if (shade < 254) shade += 1;
-    pixels[i] = color(shade, 0, shade);
+    int red = pixels[i] >> 16 & 0xFF;
+    int green = pixels[i] >> 8 & 0xFF;
+    int blue = pixels[i] & 0xFF;
+    if (red < 254) red += 1;
+    if (blue > 20) blue -= 1;
+    pixels[i] = color(red, green, blue);
   }
   updatePixels();
 }
 
 void drawFrictionWells() {
   frictionWells.display();
-}
-
-void drawRepulsionRange() {
-  stroke(125);
-  drawFullHeightLine(RepulsionRange);
-  drawFullHeightLine(width-RepulsionRange);
 }
 
 void drawFullHeightLine(int x) {

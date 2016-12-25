@@ -1,64 +1,52 @@
 // Modified from Noc02_03_Friction1
+// A ball wants to travel in a target direction at a constant speed.
+// Friction is an outside force that gets in the way (it will be applied by the main loop)
+// Each ball has a maximum acceleration which affects how quickly it can achieve its target.
 
 class Ball extends Mover {
-  float dragFactor = 0.01;
   Random generator;
-  final float MaxMouseRepulsionForce = 2;
-  final float RepulsionExponent = 3;
+  final float GravityCoefficient = 0.1;
   final float BallMassMean = 3;
   final float BallMassStdDeviation = 0.6;
+  PVector targetVelocity;
+  final float maxAcceleration = 0.1;
+  float noiseOffset;
   
-  final PVector WindForce = new PVector(0.02,0);
-  final float basicFrictionCoefficient = 0.5;
-  
-  int repulsionRange;
-  
-  Ball(Random generator, int repulsionRange) {
+  Ball(Random generator) {
     super();
     this.generator = generator;
-    this.repulsionRange = repulsionRange;
     reset();
   }
 
   void reset() {    
     velocity = new PVector(0, 0);
-    location = new PVector(random(0, width), random(30,60));
+    location = new PVector(random(0, width), random(0,height));
     mass = BallMassMean + (float)(generator.nextGaussian()*BallMassStdDeviation);
+    noiseOffset = random(0,10000);
+    setTargetVelocity();
   }
 
   void update() {
     applyForces();
     super.update();
     traverseEdges();
+    noiseOffset += 0.01;
   }
 
   void applyForces() {
-    applyForce(WindForce);
+    PVector velocityAdjustment = PVector.sub(targetVelocity, velocity);
     
-    // gravity is proportional to mass
-    PVector gravity = new PVector(0, 0.1*mass);
-    applyForce(gravity);
-    
-    applyFriction(basicFrictionCoefficient);
+    if (velocityAdjustment.mag() < 0.1) {
+      // choose another target
+      setTargetVelocity();
+    } else {
+      velocityAdjustment.setMag(maxAcceleration);
+      applyForce(velocityAdjustment);
+    }
   }
 
-  void applyFriction(float coefficient) {
-    if (abs(coefficient) < 0.001) return;
-    
-    PVector friction = velocity.copy();
-    // For now we're assuming friction applies in every direction equally.
-    friction.mult(-1);
-    friction.normalize();
-    friction.mult(coefficient);
-    
-    applyForce(friction);
-  }
-       
-  void applyRepulsionBasedOnDistance(float distance, PVector direction, float maxForce) {
-    if (distance >= RepulsionRange) return;
-    
-    float magnitude = pow((RepulsionRange-distance)/RepulsionRange,RepulsionExponent)*maxForce;
-    if (magnitude > 0.001) applyForce(PVector.mult(direction,magnitude));  
+  float getWeight() {
+    return  GravityCoefficient * mass;
   }
   
   void traverseEdges() {
@@ -74,4 +62,14 @@ class Ball extends Mover {
       location.y = height-1;
     }
   }
+  
+  void setTargetVelocity() {
+    float x = map(noise(noiseOffset),0,1,-1,1);
+    float y = map(noise(noiseOffset+1000),0,1,-1,1);
+    PVector v = new PVector(x, y);
+    v.normalize();
+    v.setMag(random(2,4));
+    targetVelocity = v;
+  }
+
 }
