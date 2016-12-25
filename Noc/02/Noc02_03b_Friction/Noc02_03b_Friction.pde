@@ -4,7 +4,7 @@
 import java.util.Random;
 
 final int MaxBalls = 25;
-final float FrictionCoefficient = 0.3;
+final float FrictionCoefficient = 0.05;
 
 Ball[] balls = new Ball[MaxBalls];
 Random generator = new Random();
@@ -22,7 +22,7 @@ void draw() {
 
   updateTheBalls();
 
-  //drawHelpText();
+  drawHelpText();
 }
 
 void updateTheBalls() {
@@ -30,7 +30,7 @@ void updateTheBalls() {
   if (mousePressed) {
     PVector mouseLocation = new PVector(mouseX, mouseY);
     if (mouseButton == LEFT) {
-      float coefficient = (keyPressed && keyCode == SHIFT) ? -FrictionCoefficient*.5 : FrictionCoefficient; 
+      float coefficient = (keyPressed && keyCode == SHIFT) ? -FrictionCoefficient : FrictionCoefficient; 
       frictionWells.addAt(mouseLocation, coefficient);
     } else if (mouseButton == RIGHT) {
       frictionWells.removeAt(mouseLocation);
@@ -39,7 +39,7 @@ void updateTheBalls() {
 
   for (int i = 0; i < balls.length; i++) {
     Ball ball = balls[i];
-    //ball.applyFriction(frictionWells.sumFrictionCoefficientAt(ball.location));
+    ball.applyFriction(frictionWells.sumFrictionCoefficientAt(ball.location));
     ball.update();
     ball.display();
   }
@@ -67,6 +67,7 @@ void fadeBackground() {
     int blue = pixels[i] & 0xFF;
     if (red < 254) red += 1;
     if (blue > 20) blue -= 1;
+    if (green < 254) green += 1;
     pixels[i] = color(red, green, blue);
   }
   updatePixels();

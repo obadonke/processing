@@ -1,6 +1,6 @@
 // A pool of friction
 
-private final float DefaultWellSize = 48.0;
+private final float DefaultWellSize = 70.0;
 
 class FrictionWell {
   PVector center;
