@@ -18,7 +18,7 @@ class FrictionWell {
   }
   
   boolean containsPoint(PVector point) {
-    return (PVector.sub(point, center).mag() < wellSize);
+    return (PVector.sub(point, center).mag() < wellSize/2);
   }
 
   void display() {

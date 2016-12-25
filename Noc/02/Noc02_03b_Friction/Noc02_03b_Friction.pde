@@ -4,7 +4,7 @@
 import java.util.Random;
 
 final int MaxBalls = 25;
-final float FrictionCoefficient = 0.05;
+final float FrictionCoefficient = 0.03;
 
 Ball[] balls = new Ball[MaxBalls];
 Random generator = new Random();
