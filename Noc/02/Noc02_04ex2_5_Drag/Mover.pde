@@ -8,12 +8,14 @@ class Mover {
   float mass;
   final int DisplayScale = 16;
   final private int DefaultMass = 1;
+  color fillColor;
   
   Mover() {
     location = new PVector(0, 0);
     velocity = new PVector(0, 0);
     acceleration = new PVector(0, 0);
     mass = DefaultMass;
+    fillColor = color(200,200,200);
   }
 
   void update() {
@@ -25,7 +27,7 @@ class Mover {
   
   void display() {
     stroke(0);
-    fill(175);
+    fill(fillColor);
     int drawSize = (int)(mass*DisplayScale);
     ellipse(location.x, location.y, drawSize, drawSize);
     ellipse(location.x, location.y, 1, 1);
@@ -40,7 +42,10 @@ class Mover {
     acceleration.mult(0);
   }
   
-  
+  Circle getBoundingCircle() {
+    return new Circle(location, ((int)mass*DisplayScale)/2);
+  }
+ 
   void applyFriction(float coefficient) {
     if (abs(coefficient) < 0.001) return;
     

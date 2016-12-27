@@ -3,23 +3,31 @@
 class Fluid {
   float dragCoefficient;
   int fromX, fromY;
-  int fluidWidth, fluidHeight;
-  
+  int fluidWidth, fluidDepth;
+
   Fluid(float dragCoef, int fromX, int fromY, int w, int h) {
     this.dragCoefficient = dragCoef;
     this.fromX = fromX;
     this.fromY = fromY;
     this.fluidWidth = w;
-    this.fluidHeight = h;
+    this.fluidDepth = h;
   }
-  
+
   void draw() {
-    fill(0,50);
+    fill(0, 50);
     noStroke();
-    rect(fromX, fromY, fluidWidth, fluidHeight);
+    rect(fromX, fromY, fluidWidth, fluidDepth);
+  }
+
+  boolean isCircleInside(Circle circle) {
+    return (circle.center.y - circle.radius) > (fromY);
+  }
+
+  Line getSurfaceLine() {
+    return new Line(new PVector(fromX, fromY), new PVector(1,0));
   }
   
-  void contains(PVector pt) {
-    
+  boolean contains(PVector pt) {
+    return pt.y > fromY;
   }
 }

@@ -24,9 +24,8 @@ void createFluid() {
 }
 
 void draw() {
-  //fadeBackground();
   background(255);
-  
+
   fluid.draw();
   updateTheBalls();
 
@@ -36,6 +35,18 @@ void draw() {
 void updateTheBalls() {
   for (int i = 0; i < balls.length; i++) {
     Ball ball = balls[i];
+    Circle c = ball.getBoundingCircle();
+    if (fluid.isCircleInside(c)) {
+      ball.fillColor = color(0, 200, 0);
+    } else {
+      PVector[] intersectPts = Geometry.getPointsWhereLineIntersectsCircle(fluid.getSurfaceLine(), c);
+      if (intersectPts[0] == intersectPts[1]) {
+        ball.fillColor = color(200, 200, 200);
+      } else {
+        ball.fillColor = color(200, 200, 0);
+      }
+    }
+
     ball.update();
     ball.display();
   }

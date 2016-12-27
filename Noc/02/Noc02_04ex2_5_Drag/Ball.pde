@@ -2,7 +2,7 @@
 
 class Ball extends Mover {
   Random generator;
-  final float BallMassMean = 3;
+  final float BallMassMean = 5;
   final float BallMassStdDeviation = 0.6;
   int xStart;
   
@@ -27,7 +27,7 @@ class Ball extends Mover {
 
   void applyForces() {
     // gravity is proportional to mass
-    PVector gravity = new PVector(0, 0.1*mass);
+    PVector gravity = new PVector(0, 0.05*mass);
     applyForce(gravity);
   }
   
