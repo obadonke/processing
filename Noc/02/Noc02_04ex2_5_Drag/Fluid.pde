@@ -1,7 +1,7 @@
 // Fluid will be a source of drag
 
 class Fluid {
-  float dragCoefficient;
+  float dragCoefficient;  // consider this to be density of liquid * Coefficient of drag
   int fromX, fromY;
   int fluidWidth, fluidDepth;
 

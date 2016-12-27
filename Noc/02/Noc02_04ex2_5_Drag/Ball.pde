@@ -2,20 +2,22 @@
 
 class Ball extends Mover {
   Random generator;
-  final float BallMassMean = 5;
-  final float BallMassStdDeviation = 0.6;
+  final float BallMassMean = 3;
+  final float BallMassStdDeviation = 1;
   int xStart;
+  int yMax;
   
-  Ball(Random generator, int x) {
+  Ball(Random generator, int x, int yMax) {
     super();
     this.xStart = x;
+    this.yMax = yMax;
     this.generator = generator;
     reset();
   }
 
   void reset() {    
     velocity = new PVector(0, 0);
-    location = new PVector(xStart, random(30,200));
+    location = new PVector(xStart, random(0, yMax));
     mass = BallMassMean + (float)(generator.nextGaussian()*BallMassStdDeviation);
   }
 

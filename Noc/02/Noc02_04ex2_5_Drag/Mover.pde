@@ -28,7 +28,7 @@ class Mover {
   void display() {
     stroke(0);
     fill(fillColor);
-    int drawSize = (int)(mass*DisplayScale);
+    int drawSize = (int)getDisplayDiameter();
     ellipse(location.x, location.y, drawSize, drawSize);
     ellipse(location.x, location.y, 1, 1);
   }
@@ -43,9 +43,13 @@ class Mover {
   }
   
   Circle getBoundingCircle() {
-    return new Circle(location, ((int)mass*DisplayScale)/2);
+    return new Circle(location, getDisplayDiameter()/2);
   }
  
+  float getDisplayDiameter() {
+    return mass*DisplayScale;
+  }
+  
   void applyFriction(float coefficient) {
     if (abs(coefficient) < 0.001) return;
     
@@ -57,4 +61,27 @@ class Mover {
     
     applyForce(friction);
   }
+  
+  void applyFluidResistance(float dragCoefficient, float distParallel, float distPerp) {
+    // apply fluid resistance based on given drag coefficient.
+    // perp will be taken as working *against* normal of the velocity vector. 
+    float speed = velocity.mag();
+    float factor = -0.5*dragCoefficient*speed*speed;
+    PVector force;
+    if (abs(distParallel) > Geometry.ZERO_TOL) { //<>//
+      force = velocity.copy();
+      force.normalize();
+      force.mult(factor*distParallel);
+      applyForce(force);
+    }
+    
+    if (abs(distPerp) > Geometry.ZERO_TOL) {
+      force = velocity.copy();
+      force.rotate(HALF_PI);
+      force.normalize();
+      force.mult(factor*distPerp);
+      applyForce(force); 
+    }
+  }
+  
 }

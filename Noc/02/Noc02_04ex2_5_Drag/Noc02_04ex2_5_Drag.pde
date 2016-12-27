@@ -5,69 +5,80 @@ import java.util.Random;
 
 final int MaxBalls = 10;
 final int RepulsionRange = 60;
-final float FrictionCoefficient = 0.1;
 
 Ball[] balls = new Ball[MaxBalls];
 Random generator = new Random();
 Fluid fluid;
+int fluidHeight;
 
 void setup() {
-  size(640, 800);
+  size(640, 1024);
   frameRate(60);
+  fluidHeight = 2*height/6;
   createFluid();
   createTheBalls();
 }
 
 void createFluid() {
-  int fluidHeight = 2*height/5;
-  fluid = new Fluid(0.1, 0, height-fluidHeight, width, fluidHeight);
+  fluid = new Fluid(0.008, 0, height-fluidHeight, width, fluidHeight);
 }
 
 void draw() {
   background(255);
 
+  if (mousePressed) {
+    resetTheBalls();
+  }
+  
   fluid.draw();
   updateTheBalls();
+}
 
-  //drawHelpText();
+void resetTheBalls() {
+  for (int i = 0; i < balls.length; i++) {
+    balls[i].reset();
+  }
 }
 
 void updateTheBalls() {
   for (int i = 0; i < balls.length; i++) {
     Ball ball = balls[i];
-    Circle c = ball.getBoundingCircle();
-    if (fluid.isCircleInside(c)) {
-      ball.fillColor = color(0, 200, 0);
-    } else {
-      PVector[] intersectPts = Geometry.getPointsWhereLineIntersectsCircle(fluid.getSurfaceLine(), c);
-      if (intersectPts[0] == intersectPts[1]) {
-        ball.fillColor = color(200, 200, 200);
-      } else {
-        ball.fillColor = color(200, 200, 0);
-      }
-    }
-
+    calcAndApplyFluidResistance(ball);
     ball.update();
     ball.display();
   }
-}
-
-void drawHelpText() {
-  fill(0);
-  textSize(14);
-  text("Left MB = add a friction well. SHIFT LMB = Propel. Right MB = remove a friction well", 0, 15);
 }
 
 void createTheBalls() {
   int gap = width/(balls.length+1);
   int ballX = gap/2;
   for (int i = 0; i < balls.length; i++) {
-    Ball b = new Ball(generator, ballX);
+    Ball b = new Ball(generator, ballX, height-fluidHeight);
     balls[i] = b;
     ballX += gap;
   }
 }
 
-void drawFullWidthLine(int x) {
-  line(0, x, width, x);
+void calcAndApplyFluidResistance(Ball ball) {
+  Circle c = ball.getBoundingCircle();
+  float ballAreaWithDrag = 0;
+
+  if (fluid.contains(ball.location)) {
+    // if at least half the ball is in the fluid, maximum resistance has been achieved
+    ball.fillColor = color(0, 200, 0); //<>//
+    ballAreaWithDrag = ball.getDisplayDiameter();
+  } else {
+    PVector[] intersectPts = Geometry.getPointsWhereLineIntersectsCircle(fluid.getSurfaceLine(), c);
+    if (intersectPts[0] == intersectPts[1]) {
+      // no drag
+      ball.fillColor = color(200, 200, 200);
+    } else {
+      ballAreaWithDrag = PVector.sub(intersectPts[0], intersectPts[1]).mag();
+      ball.fillColor = color(200, 200, 0); //<>//
+    }
+  }
+
+  if (ballAreaWithDrag < Geometry.ZERO_TOL) return;
+  
+  ball.applyFluidResistance(fluid.dragCoefficient, ballAreaWithDrag,0);
 }
