@@ -61,7 +61,7 @@ class Mover {
     // calculate attraction force towards m - see page 95 of Nature of Code
     PVector attraction = m.location.copy();
     attraction.sub(location);
-    float distance = constrain(attraction.mag(),30,800);
+    float distance = constrain(attraction.mag(),50,800);
     attraction.normalize();
     float attractionMag = (UniversalGravitationalConstant*mass*m.mass)/(distance*distance);
     attraction.mult(attractionMag);
