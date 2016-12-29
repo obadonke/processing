@@ -58,7 +58,7 @@ void updateBalls() {
 }
 
 void adjustSceneBoundsForBall(Ball ball) {
-  Rect bb = ball.getBoundingBox();
+  Rect bb = ball.getBoundingBox(); //<>//
   PVector sceneBR = sceneBounds.getBottomRight();
   PVector ballBR = bb.getBottomRight();
   

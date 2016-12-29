@@ -75,6 +75,6 @@ class Mover {
   
   Rect getBoundingBox() {
     int drawRadius = getDrawSize()/2;
-    return new Rect(location.x-drawRadius, location.y-drawRadius, location.x+drawRadius, location.y-drawRadius);
+    return new Rect(location.x-drawRadius, location.y-drawRadius, drawRadius, drawRadius);
   }
 }
