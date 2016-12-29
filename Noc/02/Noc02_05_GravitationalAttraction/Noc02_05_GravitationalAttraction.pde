@@ -5,6 +5,8 @@ import java.util.Random;
 
 final int MaxBalls = 20;
 final float FrictionCoefficient = 0.03;
+Rect sceneBounds;
+PVector scale;
 
 Ball[] balls = new Ball[MaxBalls];
 Random generator = new Random();
@@ -12,28 +14,19 @@ Random generator = new Random();
 void setup() {
   size(800, 800);
   //frameRate(60);
-  createTheBalls();
+  createBalls();
+  sceneBounds = new Rect(0,0,width,height);
+  scale = new PVector(1,1);
 }
 
 void draw() {
   fadeBackground();
-  updateTheBalls();
+  updateBalls();
+  setScale();
+  drawBalls();
 }
 
-void updateTheBalls() {
-  for (int i = 0; i < balls.length; i++) {
-    Ball ballA = balls[i];
-    for (int j = i+1; j < balls.length; j++) {
-      Ball ballB = balls[j];
-      ballA.applyAttraction(ballB);
-      ballB.applyAttraction(ballA);
-    }
-    ballA.update();
-    ballA.display();
-  }
-}
-
-void createTheBalls() {
+void createBalls() {
   balls[0] = new Ball(width/2, height/2, 1200);
   balls[0].density = 5;
   balls[1] = new Ball(width/8, height/8, 20);
@@ -48,6 +41,53 @@ void createTheBalls() {
   for (int i = 7; i < MaxBalls; i++) {
     balls[i] = new Ball((int)random(10,width-10), (int)random(10,height-10), (int)(10+random(5)));
   }
+}
+
+void updateBalls() {
+  for (int i = 0; i < balls.length; i++) {
+    Ball ballA = balls[i];
+    for (int j = i+1; j < balls.length; j++) {
+      Ball ballB = balls[j];
+      ballA.applyAttraction(ballB);
+      ballB.applyAttraction(ballA);
+    }
+    ballA.update();
+    
+    adjustSceneBoundsForBall(ballA);
+  }
+}
+
+void adjustSceneBoundsForBall(Ball ball) {
+  Rect bb = ball.getBoundingBox();
+  PVector sceneBR = sceneBounds.getBottomRight();
+  PVector ballBR = bb.getBottomRight();
+  
+  sceneBounds.x = min(sceneBounds.x, bb.x);
+  sceneBounds.y = min(sceneBounds.y, bb.y);
+  
+  sceneBounds.width = (int)max(sceneBR.x, ballBR.x) - sceneBounds.x;
+  sceneBounds.height = (int)max(sceneBR.y, ballBR.y) - sceneBounds.y; 
+}
+
+void setScale() {
+  if (sceneBounds.x == 0 && sceneBounds.y == 0 && sceneBounds.width == width && sceneBounds.height == height) {
+    scale = new PVector(1,1);
+  }
+  
+  scale = new PVector(width/(float)sceneBounds.width, height/(float)sceneBounds.height);
+  println("sceneWidth = " + sceneBounds.width + " scaleX = " + scale.x);
+}
+
+void drawBalls() {
+  pushMatrix();
+  translate(-sceneBounds.x, -sceneBounds.y);
+  scale(scale.x, scale.y);
+  
+  for (int i = 0; i < balls.length; i++) {
+    balls[i].display();
+  }
+  
+  popMatrix();
 }
 
 void fadeBackground() {

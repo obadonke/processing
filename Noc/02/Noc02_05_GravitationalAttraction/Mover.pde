@@ -31,7 +31,7 @@ class Mover {
   void display() {
     stroke(100,200,100);
     fill(colour);
-    int drawSize = (int)(mass/density);
+    int drawSize = getDrawSize();
     ellipse(location.x, location.y, drawSize, drawSize);
     ellipse(location.x, location.y, 1, 1);
   }
@@ -67,5 +67,14 @@ class Mover {
     attraction.mult(attractionMag);
     
     applyForce(attraction);
+  }
+  
+  int getDrawSize() {
+    return (int)(mass/density);
+  }
+  
+  Rect getBoundingBox() {
+    int drawRadius = getDrawSize()/2;
+    return new Rect(location.x-drawRadius, location.y-drawRadius, location.x+drawRadius, location.y-drawRadius);
   }
 }
