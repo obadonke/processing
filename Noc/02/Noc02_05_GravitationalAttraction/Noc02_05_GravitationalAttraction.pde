@@ -6,6 +6,9 @@ import java.util.Random;
 final int MaxBalls = 20;
 final float FrictionCoefficient = 0.03;
 final float MaxDistanceConstraint = 200;
+final int backRed = 60;
+final int backBlue = 30;
+final int backGreen = 30;
 
 Rect sceneBounds;
 float scale;
@@ -19,7 +22,7 @@ void setup() {
   createBalls();
   sceneBounds = new Rect(0,0,width,height);
   scale = 1;
-  background(60,40,40);
+  background(backRed,backBlue,backGreen);
 }
 
 void draw() {
@@ -31,16 +34,27 @@ void draw() {
 }
 
 void createBalls() {
+  final color blue = color(0,0,240);
+  final color darkBlue = color(0,0,160);
+  final color darkGreen = color(0,80,0);
+  
   balls[0] = new Ball(width/2, height/2, 2400, 10);
   balls[1] = new Ball(width/8, height/8, 40, 2);
-  balls[2] = new Ball(4*width/8, 7*height/8, 40);
+  balls[1].colour = darkBlue;
+  balls[2] = new Ball(4*width/8, 7*height/8, 80, 2);
+  balls[2].colour = blue;
   balls[3] = new Ball(5*width/8, height/5, 250, 5);
+  balls[3].colour = blue;
   balls[4] = new Ball(30+(5*width/8), height/5, 40, 2);
+  balls[4].colour = darkBlue;
   balls[5] = new Ball(7*width/8, 4*height/5, 250, 5);
+  balls[5].colour = blue;
   balls[6] = new Ball(30+(7*width/8), 10+(4*height/5), 40, 2);
+  balls[6].colour = darkBlue;
   
   for (int i = 7; i < MaxBalls; i++) {
     balls[i] = new Ball((int)random(50,width-50), (int)random(50,height-50), (int)(40+random(10)), 3);
+    balls[i].colour = darkGreen;
   }
 }
 
@@ -79,7 +93,7 @@ void setScale() {
   
   if (abs(lastScale-scale) > Geometry.ZERO_TOL) {
     //println();
-    background(60,40,40);
+    background(backRed,backBlue,backGreen);
   }
 }
 
@@ -98,16 +112,19 @@ void drawBalls() {
 void fadeBackground() {
   int totalPixels = width*height;
   loadPixels();
+  int backBlueHigh = backBlue+30;
+  int backGreenHigh = backGreen+30;
+  int backRedHigh = 200;
   for (int i = 0; i < totalPixels; i++) {
     int red = pixels[i] >> 16 & 0xFF;
     int green = pixels[i] >> 8 & 0xFF;
     int blue = pixels[i] & 0xFF;
-    if (red < 160) red += 1;
-    if (red > 210) red -= 1;
-    if (blue > 200) blue -= 1;
-    if (blue < 160) blue += 1;
-    if (green > 210) green -= 1;
-    if (green < 160) green += 1;
+    if (red < backRed) red += 1;
+    if (red > backRedHigh) red -= 1;
+    if (blue > backBlueHigh) blue -= 1;
+    if (blue < backBlue) blue += 1;
+    if (green > backGreenHigh) green -= 1;
+    if (green < backGreen) green += 1;
     pixels[i] = color(red, green, blue);
   }
   updatePixels();
