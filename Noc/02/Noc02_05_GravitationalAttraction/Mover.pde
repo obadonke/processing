@@ -29,7 +29,7 @@ class Mover {
   }
   
   void display() {
-    stroke(255);
+    stroke(240);
     fill(colour);
     int drawSize = getDrawSize();
     ellipse(location.x, location.y, drawSize, drawSize);

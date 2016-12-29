@@ -17,11 +17,13 @@ Ball[] balls = new Ball[MaxBalls];
 Random generator = new Random();
 
 void setup() {
-  size(800, 800);
-  //frameRate(60);
+  size(700, 700);
+  frameRate(100);
   createBalls();
-  sceneBounds = new Rect(0,0,width,height);
-  scale = 1;
+  scale = .6;
+  int newWidth = (int)(width/scale);
+  int newHeight = (int)(height/scale);
+  sceneBounds = new Rect((width-newWidth)/2,(height-newHeight)/2,newWidth,newHeight);
   background(backRed,backBlue,backGreen);
 }
 
@@ -89,10 +91,9 @@ void adjustSceneBoundsForBall(Ball ball) {
 
 void setScale() {
   float lastScale = scale;
-  scale = min(width/(float)sceneBounds.width, height/(float)sceneBounds.height);
+  scale = min(width/(float)sceneBounds.width, height/(float)sceneBounds.height); //<>//
   
   if (abs(lastScale-scale) > Geometry.ZERO_TOL) {
-    //println();
     background(backRed,backBlue,backGreen);
   }
 }
