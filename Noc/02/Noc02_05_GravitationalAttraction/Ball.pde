@@ -5,10 +5,15 @@ class Ball extends Mover {
   final float BallMassStdDeviation = 30;
   
   Ball(int x, int y, float m) {
+    this(x, y, m, 1);
+  }
+
+  Ball(int x, int y, float m, float d) {
     super();
     velocity = new PVector(0,0);
     location = new PVector(x,y);
     mass = m;
+    density = d;
   }
 
   void update() {

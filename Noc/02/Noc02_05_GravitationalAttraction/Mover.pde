@@ -29,7 +29,7 @@ class Mover {
   }
   
   void display() {
-    stroke(100,200,100);
+    stroke(255);
     fill(colour);
     int drawSize = getDrawSize();
     ellipse(location.x, location.y, drawSize, drawSize);
@@ -57,11 +57,11 @@ class Mover {
     acceleration.mult(0);
   }
   
-  void applyAttraction(Mover m) {
+  void applyAttraction(Mover m, float maxDist) {
     // calculate attraction force towards m - see page 95 of Nature of Code
     PVector attraction = m.location.copy();
     attraction.sub(location);
-    float distance = constrain(attraction.mag(),50,800);
+    float distance = constrain(attraction.mag(),60,maxDist);
     attraction.normalize();
     float attractionMag = (UniversalGravitationalConstant*mass*m.mass)/(distance*distance);
     attraction.mult(attractionMag);

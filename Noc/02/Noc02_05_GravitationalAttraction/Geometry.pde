@@ -50,10 +50,14 @@ class Rect {
   PVector getBottomRight() {
     return new PVector(x+width, y+height);
   }
+  
+  String ToString() {
+    return String.format("[(%d, %d) %d x %d]", x, y, width, height);
+  }
 }
 
 static class Geometry {
-  final static float ZERO_TOL = 0.0001;
+  final static float ZERO_TOL = 0.00001;
   
   static PVector[] getPointsWhereLineIntersectsCircle(Line line, Circle circle) {
     // based on https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
