@@ -9,7 +9,7 @@ void setup() {
 
 void draw() {
   background(255);
-
+  lander.update();
   lander.draw();
 }
 

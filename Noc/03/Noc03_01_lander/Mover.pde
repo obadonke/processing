@@ -11,7 +11,6 @@ class Mover {
   float angle;
 
   float mass;
-  float momentOfInertia;
   float density;  // per pixel
 
   final private int DefaultMass = 100;
@@ -30,7 +29,6 @@ class Mover {
 
   void setMass(float m) {
     mass = m;
-    momentOfInertia = m*m; // fudge just to get value
   }
 
   void update() {
@@ -41,18 +39,20 @@ class Mover {
     angle += angularVelocity;
 
     resetAcceleration();
+    
+    checkEdges();
   }
    
   void applyForce(PVector force) {
     acceleration.add(PVector.div(force,mass));
   }
   
-  void applyTorque(float t) {
-    angularAcceleration += t/momentOfInertia;
+  void applyAngularAcceleration(float t) {
+    angularAcceleration += t;
   }
 
   void applyFriction(float coefficient) {
-    if (abs(coefficient) < 0.001) return;
+    if (abs(coefficient) < 0.0001) return;
     
     PVector friction = velocity.copy();
     // For now we're assuming friction applies in every direction equally.
@@ -61,9 +61,27 @@ class Mover {
     friction.mult(coefficient*mass);
     
     applyForce(friction);
+    
+    float angularFriction = -angularVelocity*coefficient;
+    applyAngularAcceleration(angularFriction);
   }
   
   void resetAcceleration() {
     acceleration.mult(0);
+    angularAcceleration = 0;
+  }
+  
+  void checkEdges() {
+    if (location.x > width) {
+      location.x = 0;
+    } else if (location.x < 0) {
+      location.x = width;
+    }
+    
+    if (location.y > height) {
+      location.y = 0;
+    } else if (location.y < 0) {
+      location.y = height;
+    }
   }
 }  
