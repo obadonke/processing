@@ -3,7 +3,7 @@ class Pendulum {
   float angle;
   float angularVel;
   float angularAcc;
-  final float Gravity = 0.01;
+  final float Gravity = 0.4;
   PVector pivotLocation;
   float len;
   int bobSize;
@@ -16,9 +16,11 @@ class Pendulum {
   }
   
   void update() {
-    angularAcc = -1*Gravity*sin(angle);
+    angularAcc = -1*Gravity*sin(angle)/len;
     angularVel += angularAcc;
     angle += angularVel;
+    
+    angularVel *= 0.997;
   }
   
   void display() {
@@ -28,6 +30,7 @@ class Pendulum {
     
     PVector bobLocation = new PVector(len*sin(angle), len*cos(angle));
     line(0,0, bobLocation.x, bobLocation.y);
+    fill(0,200,0);
     ellipse(bobLocation.x, bobLocation.y, bobSize, bobSize);
     
     popMatrix();
