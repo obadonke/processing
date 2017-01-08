@@ -1,23 +1,26 @@
 // attempt at defining a static ground body
 
-class Ground {
+class Platform {
   Body body;
+  float x, y;
   float floorHeight;
   float floorWidth;
   
-  Ground(float w, float h) {
+  Platform(float x, float y, float w, float h) {
+    this.x = x;
+    this.y = y;
     floorHeight = h;
     floorWidth = w;
     
     BodyDef bd = new BodyDef();
     bd.type = BodyType.STATIC;
-    bd.setPosition(box2d.coordPixelsToWorld(width/2,floorHeight));
+    bd.setPosition(box2d.coordPixelsToWorld(x,y));
     body = box2d.createBody(bd);
     
     PolygonShape shape = new PolygonShape();
-    float groundW = box2d.scalarPixelsToWorld(floorWidth/2);
-    float groundH = box2d.scalarPixelsToWorld(5);
-    shape.setAsBox(groundW, groundH);
+    float platformW = box2d.scalarPixelsToWorld(floorWidth/2);
+    float platformH = box2d.scalarPixelsToWorld(floorHeight/2);
+    shape.setAsBox(platformW, platformH);
     
     FixtureDef fixDef = new FixtureDef();
     fixDef.shape = shape;
@@ -36,7 +39,7 @@ class Ground {
     fill(175);
     stroke(0);
     rectMode(CENTER);
-    rect(0,0,floorWidth,5);
+    rect(0,0,floorWidth,floorHeight);
     popMatrix();
   }
 
