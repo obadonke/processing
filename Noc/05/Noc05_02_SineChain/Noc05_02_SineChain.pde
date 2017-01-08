@@ -19,7 +19,7 @@ ArrayList<Particle> particles;
 Surface surface;
 
 void setup() {
-  size(383,200);
+  size(500,300);
 
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
@@ -32,7 +32,7 @@ void setup() {
 void draw() {
   // If the mouse is pressed, we make new particles
   if (mousePressed) {
-    float sz = random(2,6);
+    float sz = random(4,8);
     particles.add(new Particle(mouseX,mouseY,sz));
   }
 

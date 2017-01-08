@@ -39,8 +39,8 @@ class Particle {
     strokeWeight(1);
     ellipse(0,0,r*2,r*2);
 
-    // Let's add a line so we can see the rotation
-    line(0,0,r,0);
+    rectMode(CENTER);
+    rect(0, r, r*0.8, r*3);
     popMatrix();
   }
 
@@ -56,17 +56,26 @@ class Particle {
     CircleShape cs = new CircleShape();
     cs.m_radius = box2d.scalarPixelsToWorld(r);
     
+    addFixture(cs);
+
+    PolygonShape ps = new PolygonShape();
+    ps.setAsBox(cs.m_radius*0.4, cs.m_radius*1.5, new Vec2(0,-cs.m_radius),0);
+    
+    addFixture(ps);
+    
+    // Give random initial velocity (and angular velocity)
+    body.setLinearVelocity(new Vec2(random(-10f,10f),random(5f,10f)));
+    body.setAngularVelocity(random(-10,10));
+  }
+  
+  private void addFixture(Shape shape) {
     FixtureDef fd = new FixtureDef();
-    fd.shape = cs;
+    fd.shape = shape;
     fd.density = 1;
     fd.friction = 0.01;
     fd.restitution = 0.3;
     
     body.createFixture(fd);
-
-    // Give random initial velocity (and angular velocity)
-    body.setLinearVelocity(new Vec2(random(-10f,10f),random(5f,10f)));
-    body.setAngularVelocity(random(-10,10));
   }
 
 

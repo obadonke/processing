@@ -17,7 +17,7 @@ class Surface {
     // JJS 8.1.2017: I tested reversing the chain and it still worked? Left original.
     // This "edgechain" will only work in one direction!
     for (float x = width+10; x > -10; x -= 5) {
-      float y = map(cos(theta)+cos(theta/3),-2,2,75,height-10);
+      float y = map(cos(theta)+cos(theta/3),-2,2,100,height-30);
       theta += 0.15;
 
       // Store the vertex in screen coordinates
