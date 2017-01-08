@@ -1,15 +1,19 @@
 // A rectangular box - taken directly from Shiffman examples
 
+static int BoxId = 0;
+
 class Box {
   //  Instead of any of the usual variables, we will store a reference to a Box2D Body
   Body body;      
-
+  
   float w,h;
-
+  int id;
+  
   Box(float x, float y) {
     w = 16;
     h = 16;
-
+    id = ++BoxId;
+    
     // Build Body
     BodyDef bd = new BodyDef();      
     bd.type = BodyType.DYNAMIC;
@@ -37,8 +41,17 @@ class Box {
   }
 
   void display() {
+    if (isDead()) return;
+    
     // We need the Body’s location and angle
-    Vec2 pos = box2d.getBodyPixelCoord(body);    
+    Vec2 pos = box2d.getBodyPixelCoord(body);
+    
+    if (pos.y > height+h)
+    {
+      killBody();
+      return;
+    }
+    
     float a = body.getAngle();
 
     pushMatrix();
@@ -51,4 +64,13 @@ class Box {
     popMatrix();
   }
 
+  void killBody() {
+    box2d.destroyBody(body);
+    print("[RIP"+id+"]");
+    body = null;
+  }
+  
+  boolean isDead() {
+    return body == null;
+  }
 }
