@@ -54,7 +54,7 @@ class Box implements IBox {
     
     if (pos.y > height+h)
     {
-      killBody();
+      kill();
       return;
     }
     
@@ -70,7 +70,13 @@ class Box implements IBox {
     popMatrix();
   }
 
-  void killBody() {
+  Body getBody() {
+    return body;
+  }
+  
+  void kill() {
+    if (isDead()) return;
+    
     box2d.destroyBody(body);
     print("[RIP"+id+"]");
     body = null;
@@ -78,5 +84,15 @@ class Box implements IBox {
   
   boolean isDead() {
     return body == null;
+  }
+  
+  boolean contains(float x, float y) {
+    if (isDead()) return false;
+
+    // we will ignore rotation and ignore tolerance issues
+    Vec2 pos = box2d.getBodyPixelCoord(body);
+    Vec2 delta = new Vec2(x, y);
+    delta = delta.sub(pos).abs();
+    return (abs(delta.x) < w/2.0 && abs(delta.y) < h/2.0);  
   }
 }
