@@ -1,7 +1,8 @@
 // the spacecraft
 
-class Lander extends Mover {
-  final int ShipWidth = 40;
+class Lander {
+  Body body;
+  final int ShipHalfWidth = 20;
   final int ShipHeight = 60;
   final int ThrusterHeight = 5;
   final int ThrusterWidth = 5;
@@ -12,37 +13,35 @@ class Lander extends Mover {
 
   Lander(PVector startLoc) {
     super();
-    location = startLoc.copy();
+    
+    createBody(startLoc);
   }
 
   void draw() {
+    PVector location = box2d.coordWorldToPixelsPVector(body.getPosition());
+    float angle = body.getAngle();
     pushMatrix();
     translate(location.x, location.y);
-    rotate(angle-HALF_PI);
+    rotate(-angle);
 
-    drawThruster(ThrusterInset-ShipWidth/2, rightThrustOn, false);
-    drawThruster(ShipWidth/2-ThrusterInset-ThrusterWidth, leftThrustOn, true);
+    //drawThruster(ThrusterInset-ShipHalfWidth, rightThrustOn, false);
+    //drawThruster(ShipHalfWidth-ThrusterInset-ThrusterWidth, leftThrustOn, true);
     drawBody();
     popMatrix();
   }
 
   void update() {
-    float angleAccel = 0.004;
+    float angle = 0;
     PVector thrustForceVector = PVector.fromAngle(angle);
     if (leftThrustOn) {
       thrustForceVector.setMag(thrustForceMag);
-      applyForce(thrustForceVector);
-      applyAngularAcceleration(angleAccel);
-    }
+      //body.applyForce(thrustForceVector);
+   }
 
     if (rightThrustOn) {
       thrustForceVector.setMag(thrustForceMag);
-      applyForce(thrustForceVector);
-      applyAngularAcceleration(-angleAccel);
+      //body.applyForce(thrustForceVector);
     }
-
-    applyFriction(0.02);
-    super.update();
   }
 
   void drawThruster(int offsetFromCenter, boolean drawThrust, boolean reversed) {
@@ -72,7 +71,8 @@ class Lander extends Mover {
   void drawBody() {
     stroke(0);
     fill(0, 100, 200);
-    triangle(-ShipWidth/2, ThrusterHeight, 0, ShipHeight-ThrusterHeight, ShipWidth/2, ThrusterHeight);
+        
+    triangle(-ShipHalfWidth, 0, 0, -ShipHeight, ShipHalfWidth, 0);
   }
 
   void leftThrust(boolean on) {
@@ -82,4 +82,39 @@ class Lander extends Mover {
   void rightThrust(boolean on) {
     rightThrustOn = on;
   }
+  
+  void createBody(PVector location) {
+    BodyDef bd = new BodyDef();
+    bd.type = BodyType.DYNAMIC;
+    bd.position.set(box2d.coordPixelsToWorld(location));
+    body = box2d.createBody(bd);
+    
+    // main ship body
+    PolygonShape bodyShape = new PolygonShape();
+    //bodyShape.setAsBox(box2d.scalarPixelsToWorld(ShipHalfWidth),box2d.scalarPixelsToWorld(ShipHeight));
+    
+    Vec2[] points = new Vec2[3];
+    points[0] = new Vec2(box2d.scalarPixelsToWorld(ShipHalfWidth),0);
+    points[1] = new Vec2(0, box2d.scalarPixelsToWorld(ShipHeight));
+    points[2] = new Vec2(box2d.scalarPixelsToWorld(-ShipHalfWidth),0);
+    bodyShape.set(points,3);
+    if (!bodyShape.validate()) {
+      println("Body shape is not valid.");
+    }
+    
+    println(bodyShape.getVertex(0));
+    println(bodyShape.getVertex(1));
+    println(bodyShape.getVertex(2));
+    
+    
+    FixtureDef fd = new FixtureDef();
+    fd.shape = bodyShape;
+    fd.density = 2;
+    fd.friction = 0;
+    fd.restitution = 0.2;
+    
+    body.createFixture(fd);
+    body.setAngularVelocity(0.2);
+  }
+  
 }

@@ -31,8 +31,7 @@ class Platform {
   
     void display() {
     Vec2 pos = box2d.getBodyPixelCoord(body);    
-    float a = body.getAngle();
-
+    
     pushMatrix();
     translate(pos.x,pos.y);    // Using the Vec2 position and float angle to
     //rotate(-a);              // translate and rotate the rectangle
