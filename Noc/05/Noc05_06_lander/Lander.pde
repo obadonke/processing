@@ -29,11 +29,11 @@ class Lander {
     drawBody();
     pushMatrix();
     translate(ThrusterInset-ShipHalfWidth, 0);
-    drawThruster(rightThrustOn, false);
+    drawThruster(leftThrustOn, true);
     popMatrix();
     pushMatrix();
     translate(ShipHalfWidth-ThrusterInset-ThrusterWidth, 0);
-    drawThruster(leftThrustOn, true);
+    drawThruster(rightThrustOn, false);
     popMatrix();
     popMatrix();
   }
@@ -55,7 +55,7 @@ class Lander {
   void drawThruster(boolean drawThrust, boolean left) {
     fill(200, 0, 0);
     stroke(0);
-    float curOffset = left ? 0 : ThrusterVertStep;
+    float curOffset = left ? ThrusterVertStep : 0;
     beginShape();
     vertex(0, ThrusterHeight-curOffset);
     vertex(0, 0);
@@ -69,10 +69,10 @@ class Lander {
       fill(0, 240, 200);
       noStroke();
       beginShape();
-      vertex(thrustApexX, -1);
-      vertex(thrustApexX-2, -ThrusterHeight);
-      vertex(thrustApexX, -2*ThrusterHeight);
-      vertex(thrustApexX+2, -ThrusterHeight);
+      vertex(thrustApexX, 1);
+      vertex(0, ThrusterHeight);
+      vertex(thrustApexX, 3*ThrusterHeight);
+      vertex(thrustApexX*2, ThrusterHeight);
       endShape();
     }
   }
