@@ -4,22 +4,23 @@ class Mover {
   Body body;
   PVector location;
   float noiseOffset;
-  final float radius = 14;
+  float radius;
   float maxAcceleration;
   float maxSpeed;
   Vec2 curForce = null;
   
   Mover() {
+    radius = random(8,22);
     location = new PVector(randomDim(width), randomDim(height));
     noiseOffset = random(3000);
     
     createBody();
-    maxAcceleration = body.getMass()*2;
+    maxAcceleration = body.getMass()*box2d.scalarPixelsToWorld(20);
     maxSpeed = box2d.scalarPixelsToWorld(100);
   }
 
   float randomDim(float max) {
-    return 0.1*max+random(max*0.8);
+    return 0.05*max+random(max*0.9);
   }
   
   void createBody() {
@@ -33,9 +34,9 @@ class Mover {
     cs.setRadius(box2d.scalarPixelsToWorld(radius));
     FixtureDef fd = new FixtureDef();
     fd.shape = cs;
-    fd.density = 2;
+    fd.density = 10;
     fd.friction = 0.0;
-    fd.restitution = 0.0;
+    fd.restitution = 0.8;
     
     body.createFixture(fd);
     body.setBullet(true);
@@ -45,9 +46,7 @@ class Mover {
     curForce = chooseForce();  
     body.applyForceToCenter(curForce);
     
-    
-    noiseOffset+=0.0001;
-
+   
     Vec2 velocity = body.getLinearVelocity();
     float speed = velocity.length();
     if (speed > maxSpeed)
@@ -67,24 +66,30 @@ class Mover {
     location = box2d.coordWorldToPixelsPVector(body.getPosition());
 
     Vec2 force = new Vec2();
-    force.x = chooseAccComponent(location.x, width, 0);
-    force.y = -chooseAccComponent(location.y, height, 1000);
+    boolean onlyCorrection = random(1) < 0.99;
+    force.x = chooseAccComponent(location.x, width, 0, onlyCorrection);
+    force.y = -chooseAccComponent(location.y, height, 1000, onlyCorrection);
+    
     force = force.mul(body.getMass());
-
+    if (curForce != null) {
+      if (force.x == 0.0) force.x = curForce.x;
+      if (force.y == 0.0) force.y = curForce.y;
+    }
     return force;
   }
 
-  float chooseAccComponent(float currentVal, float max, float noiseShift) {
-    if (currentVal > max*0.9) {
-      return -maxAcceleration;
-    } else if (currentVal < max*0.1) {
-      return maxAcceleration;
+  float chooseAccComponent(float currentVal, float max, float noiseShift, boolean onlyCorrection) {
+    if (currentVal > max*0.95) {
+      return -maxAcceleration*0.7;
+    } else if (currentVal < max*0.05) {
+      return maxAcceleration*0.7;
     }
      
-   return noise2scalar(noiseOffset+noiseShift);
+   return onlyCorrection ? 0 : noise2scalar(noiseOffset+noiseShift);
   }
 
   float noise2scalar(float offset) {
+    noiseOffset+=0.01;
     return map(noise(offset), 0, 1, -maxAcceleration, maxAcceleration);
   }
 }

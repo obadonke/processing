@@ -8,7 +8,7 @@ import java.util.Iterator;
 // Nature of Code Exercise 1.6 Acceleration using Perlin noise
 // Now integrated with Box2D
 
-int MAX_MOVERS = 30;
+int MAX_MOVERS = 250;
 int totalPixels;
 
 ArrayList<Mover> movers = new ArrayList<Mover>();
@@ -43,9 +43,9 @@ void fadeBackground() {
   loadPixels();
   for (int i = 0; i < totalPixels; i++) {
     int shade = pixels[i] >> 16 & 0xFF;
-    if (shade < 180) shade += 1;
+    if (shade < 180) shade += 4;
     if (shade > 220) shade -= 1;
-    pixels[i] = color(shade,0,0);
+    pixels[i] = color(shade,0,shade);
   }
   updatePixels();
 }
