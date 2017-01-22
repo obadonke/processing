@@ -9,27 +9,44 @@ import org.jbox2d.dynamics.joints.*;
 
 Box2DProcessing box2d;
 Lander lander;
-Platform platform1;
-Platform platform2;
+ArrayList<Platform> platforms;
+ArrayList<Box> boxes;
 
 void setup() {
   size(800, 600);
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
-  //box2d.setGravity(0,0);
+  box2d.setGravity(0, -2);
 
   lander = new Lander(new PVector(width/4, height/2));
-  
-  platform1 = new Platform(200, 500, 400, 10);
-  platform2 = new Platform(width-200, 200, 200, 10);
+
+  platforms = new ArrayList<Platform>();
+  platforms.add(new Platform(200, 500, 400, 10));
+  platforms.add(new Platform(width-200, 200, 200, 10));
+  platforms.add(new Platform(0, height/2, 1, height));
+  platforms.add(new Platform(width, height/2, 1, height));
+  platforms.add(new Platform(width/2, height, width, 1));
+  platforms.add(new Platform(width/2, 0, width, 1));
+
+  boxes = new ArrayList<Box>();
+  for (int i = 1; i < 25; i++) {
+    boxes.add(new Box(i*width/25, 0, 10, 10, color(200, 0, 200)));
+    
+  }
 }
 
 void draw() {
   background(255);
   box2d.step();
-  
-  platform1.display();
-  platform2.display();
+
+  for (Platform platform : platforms) {
+    platform.display();
+  }
+
+  for (Box box : boxes) {
+    box.display();
+  }
+
   lander.update();
   lander.draw();
 }

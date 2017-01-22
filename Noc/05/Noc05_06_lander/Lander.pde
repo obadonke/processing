@@ -11,12 +11,13 @@ class Lander {
   
   boolean leftThrustOn = false;
   boolean rightThrustOn = false;
-  final float thrustForceMag = 4;
+  float thrustForceMag;
 
   Lander(PVector startLoc) {
     super();
 
     createBody(startLoc);
+    thrustForceMag =  20*body.getMass();
   }
 
   void draw() {
@@ -39,17 +40,24 @@ class Lander {
   }
 
   void update() {
-    float angle = 0;
-    PVector thrustForceVector = PVector.fromAngle(angle);
-    if (leftThrustOn) {
-      thrustForceVector.setMag(thrustForceMag);
-      //body.applyForce(thrustForceVector);
+    if (!(leftThrustOn || rightThrustOn))
+      return;
+      
+    float angle = body.getAngle()+HALF_PI;
+    
+    if (leftThrustOn && rightThrustOn) {
+      // ok
+    } else if (leftThrustOn) {
+      angle -= 0.1;
+      body.applyAngularImpulse(-body.getMass()/3);
+    } else {
+      angle += 0.1;
+      body.applyAngularImpulse(body.getMass()/3);
     }
-
-    if (rightThrustOn) {
-      thrustForceVector.setMag(thrustForceMag);
-      //body.applyForce(thrustForceVector);
-    }
+ 
+    Vec2 thrustVector = new Vec2(cos(angle), sin(angle));
+    thrustVector = thrustVector.mul(thrustForceMag);    
+    body.applyForceToCenter(thrustVector);
   }
 
   void drawThruster(boolean drawThrust, boolean left) {
@@ -102,7 +110,8 @@ class Lander {
     createThruster(true);
     createThruster(false);
 
-    body.setAngularVelocity(0.2);
+    body.setLinearDamping(0.5);
+    body.setAngularDamping(0.5);
   }
 
   void createShipBody() {
@@ -150,8 +159,8 @@ class Lander {
     FixtureDef fd = new FixtureDef();
     fd.shape = shape;
     fd.density = 2;
-    fd.friction = 0;
-    fd.restitution = 0.2;
+    fd.friction = 0.1;
+    fd.restitution = 0.1;
 
     body.createFixture(fd);
   }

@@ -24,8 +24,8 @@ class Platform {
     
     FixtureDef fixDef = new FixtureDef();
     fixDef.shape = shape;
-    fixDef.restitution = 0.5;
-
+    fixDef.restitution = 0.3;
+    fixDef.friction = 0.5;
     body.createFixture(fixDef);
   }
   

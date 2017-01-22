@@ -44,6 +44,7 @@ class Box implements IBox {
 
     // Attach Fixture to Body               
     body.createFixture(fd);
+    body.applyAngularImpulse(body.getMass()*random(3,5));
   }
 
   void display() {
