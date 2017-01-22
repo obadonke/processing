@@ -7,21 +7,26 @@ import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.joints.*;
 import org.jbox2d.dynamics.contacts.*;
 import java.util.Iterator;
+import processing.sound.*;
 
 Box2DProcessing box2d;
 Lander lander;
 ArrayList<Platform> platforms;
 ArrayList<Box> boxes;
+SoundFile ploppSound;
 
 void setup() {
   size(800, 600);
+  
+  ploppSound = new SoundFile(this, "plopp.mp3");
+  
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
   box2d.setGravity(0, -2);
   box2d.listenForCollisions();
   
   lander = new Lander(new PVector(width/4, height/2));
-
+  
   platforms = new ArrayList<Platform>();
   platforms.add(new Platform(200, 500, 400, 10));
   platforms.add(new Platform(width-200, 200, 200, 10));

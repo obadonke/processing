@@ -116,6 +116,7 @@ class Box implements IBox, IContactable {
 
     switch (other.getContactRole()) {
     case Missile:
+      ploppSound.play();
       markedForDeletion = true;
       break;
     default:
