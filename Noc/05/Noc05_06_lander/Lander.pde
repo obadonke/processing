@@ -1,6 +1,6 @@
 // the spacecraft
 
-class Lander {
+class Lander implements IContactable {
   Body body;
   final int ShipHalfWidth = 20;
   final int ShipHeight = 60;
@@ -112,6 +112,7 @@ class Lander {
 
     body.setLinearDamping(0.5);
     body.setAngularDamping(0.5);
+    body.setUserData(this);
   }
 
   void createShipBody() {
@@ -164,4 +165,13 @@ class Lander {
 
     body.createFixture(fd);
   }
+  
+  void madeContact(IContactable other) {
+    return;
+  }
+  
+  ContactRole getContactRole() {
+    return ContactRole.Missile;
+  }
+
 }

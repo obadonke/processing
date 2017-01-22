@@ -5,7 +5,8 @@ import org.jbox2d.collision.shapes.*;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.joints.*;
-//import java.util.Iterator;
+import org.jbox2d.dynamics.contacts.*;
+import java.util.Iterator;
 
 Box2DProcessing box2d;
 Lander lander;
@@ -17,7 +18,8 @@ void setup() {
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
   box2d.setGravity(0, -2);
-
+  box2d.listenForCollisions();
+  
   lander = new Lander(new PVector(width/4, height/2));
 
   platforms = new ArrayList<Platform>();
@@ -43,8 +45,14 @@ void draw() {
     platform.display();
   }
 
-  for (Box box : boxes) {
-    box.display();
+  Iterator<Box> iterBox = boxes.iterator();
+  while (iterBox.hasNext()) {
+    Box box = iterBox.next();
+    if (box.isDead()) {
+      iterBox.remove();
+    } else {
+      box.display();
+    }
   }
 
   lander.update();
@@ -66,4 +74,28 @@ void keyReleased() {
   } else if (key == 'D' || key == 'd') {
     lander.rightThrust(false);
   }
+}
+
+void beginContact(Contact contact) {
+  Object fixA = contact.getFixtureA().getBody().getUserData();
+  Object fixB = contact.getFixtureB().getBody().getUserData();
+  
+  IContactable conA = IContactable.class.isInstance(fixA) ? (IContactable)fixA : null;
+  IContactable conB = IContactable.class.isInstance(fixB) ? (IContactable)fixB : null;
+  
+  if (conA != null) {
+    conA.madeContact(conB);
+  }
+  
+  if (conB != null) {
+    conB.madeContact(conA);
+  }
+}
+
+public static boolean implementsInterface(Object object, Class interf){
+    return interf.isInstance(object);
+}
+
+void endContact(Contact contact) {
+  // must include this for contacts to work
 }
