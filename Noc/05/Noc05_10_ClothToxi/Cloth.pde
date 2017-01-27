@@ -9,14 +9,15 @@ class Cloth {
   Cloth(float left, float top, float w, float h, int xSegments, int ySegments, int numPins, float strength) {
     numParticlesX = xSegments+1;
     numParticlesY = ySegments+1;
-    drawer = new SegmentDrawer();
     if (numPins < 2) numPins = 2;
     
     particles = new Particle[numParticlesX][numParticlesY];
     float segWidth = w/xSegments;
     float segHeight = h/ySegments;
-    print("SegWxH " + segWidth + " x " + segHeight);
-    springMaker = new SegmentSpringMaker(min(segWidth, segHeight), strength);
+    println("SegWxH " + segWidth + " x " + segHeight);
+    float restLen = min(segWidth, segHeight);
+    springMaker = new SegmentSpringMaker(restLen, strength);
+    drawer = new SegmentDrawer(restLen);
 
     for (int i = 0; i < numParticlesX; i++) {
       float x = left + segWidth*i;
@@ -38,9 +39,6 @@ class Cloth {
       particles[pinX][0].lock();
       hooks.add(particles[pinX][numParticlesY-1]);
     }
-    
-    //hooks.add(particles[0][numParticlesY-1]);
-    //hooks.add(particles[numParticlesX-1][numParticlesY-1]);
     
     applySegmentFunc(springMaker);
   }

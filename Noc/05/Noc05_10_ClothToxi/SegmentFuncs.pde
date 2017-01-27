@@ -3,7 +3,25 @@ interface ISegmentFunc {
 }
 
 class SegmentDrawer implements ISegmentFunc {
+  float restLen;
+  
+  SegmentDrawer(float restLen) {
+    this.restLen = restLen;
+    println(restLen);
+  }
+  
   void DoSegment(Particle a, Particle b) {
+    float ratio = abs(a.distanceTo(b))/restLen;
+    color c;
+    
+    if (ratio < 1) {
+      c = color(0,200,0);
+    } else if (ratio < 1.2) {
+      c = color(0,0,0);
+    } else {
+      c = color(200+ratio,0,0);
+    }
+    stroke(c);
     line(a.x, a.y, b.x, b.y);
   }
 }
