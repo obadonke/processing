@@ -5,6 +5,7 @@ class Node extends VerletParticle2D {
   Node(int id, Vec2D loc) {
     super(loc);
     this.id = id;
+
     if (id == 0) {
       diameter = 25;
     }

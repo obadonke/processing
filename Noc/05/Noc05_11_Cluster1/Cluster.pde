@@ -3,13 +3,15 @@ class Cluster {
   float diameter;
   float strength;
   
-  Cluster(int n, float d, Vec2D center) {
+  Cluster(int n, float d, Vec2D center, VerletPhysics2D physics) {
     nodes = new ArrayList<Node>();
     diameter = d;
-    strength = 0.02;
+    strength = 0.01;
     
     for (int i = 0; i < n; i++) {
-      nodes.add(new Node(i, center.add(Vec2D.randomVector())));
+      Node node = new Node(i, center.add(Vec2D.randomVector()));
+      physics.addParticle(node);
+      nodes.add(node);
     }
     
     connectAllNodes();
