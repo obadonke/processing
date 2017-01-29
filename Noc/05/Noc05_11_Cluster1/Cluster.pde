@@ -6,7 +6,7 @@ class Cluster {
   Cluster(int n, float d, Vec2D center) {
     nodes = new ArrayList<Node>();
     diameter = d;
-    strength = 0.1;
+    strength = 0.02;
     
     for (int i = 0; i < n; i++) {
       nodes.add(new Node(center.add(Vec2D.randomVector())));
