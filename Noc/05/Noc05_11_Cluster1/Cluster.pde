@@ -9,7 +9,7 @@ class Cluster {
     strength = 0.02;
     
     for (int i = 0; i < n; i++) {
-      nodes.add(new Node(center.add(Vec2D.randomVector())));
+      nodes.add(new Node(i, center.add(Vec2D.randomVector())));
     }
     
     connectAllNodes();
@@ -25,6 +25,10 @@ class Cluster {
         physics.addSpring(new VerletSpring2D(a, b, diameter, strength));
       }
     }
+  }
+  
+  Node getPinNode() {
+    return nodes.get(0);  
   }
   
   void display() {
