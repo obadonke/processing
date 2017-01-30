@@ -29,8 +29,12 @@ class Cluster {
     }
   }
   
-  Node getPinNode() {
+  Node getHeadNode() {
     return nodes.get(0);  
+  }
+  
+  Node getNodeAt(int n) {
+    return nodes.get(n);
   }
   
   void display() {
