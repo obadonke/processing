@@ -2,12 +2,14 @@
 
 import java.util.Random;
 
-int MAX_MOVERS = 40;
+int NUM_VEHICLES = 3;
+float MAX_SPEED = 6;
+float MAX_ACCELERATION = 1;
 int totalPixels;
 final float distanceStep = 15;
 final float maxDistanceRange = 12;
 
-Mover[] mover = new Mover[MAX_MOVERS];
+ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 Random generator = new Random();
 
 void setup() {
@@ -15,19 +17,13 @@ void setup() {
   background(255);
   totalPixels = width*height;
 
-  for (int i = 0; i < MAX_MOVERS; i++) {
-    mover[i] = new Mover();
+  for (int i = 0; i < NUM_VEHICLES; i++) {
+    vehicles.add(new Vehicle(random(width), random(height), 5));
   }
 }
 void draw() {
-
   fadeBackground();
-
-  drawDistanceSteps();
-
-  updateTheMovers();
-
-  drawHelpText();
+  updateTheVehicles();
 }
 
 void fadeBackground() {
@@ -40,20 +36,17 @@ void fadeBackground() {
   updatePixels();
 }
 
-void drawDistanceSteps() {
-  for (int i = 1; i <= maxDistanceRange; i++) {
-    stroke(240, 240, 0);
-    strokeWeight(1);
-    noFill();
-    ellipse(mouseX, mouseY, distanceStep*i*2, distanceStep*i*2);
-  }
-}
 
-void updateTheMovers() {
-  for (int i = 0; i < MAX_MOVERS; i++) {
-    mover[i].update();
-    mover[i].checkEdges();
-    mover[i].display();
+void updateTheVehicles() {
+  PVector target = new PVector(mouseX, mouseY);
+  for (Vehicle v: vehicles) {
+    v.seek(target);
+    v.update();
+    //v.checkEdges();
+    v.display();
+    
+    PVector vector = PVector.mult(v.velocity,-50);
+    target = PVector.add(v.location,vector);
   }
 }
 

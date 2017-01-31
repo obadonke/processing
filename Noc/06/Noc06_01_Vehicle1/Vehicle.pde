@@ -9,39 +9,54 @@ class Vehicle {
   PVector velocity;
   PVector acceleration;
   float maxSpeed;
-  PVector oldTarget;
   float maxAcceleration;
+  float size = 3;
   
-  Vehicle() {
-    location = new PVector(random(width), random(height));
+  Vehicle(float x, float y, float r) {
+    size = r;
+    location = new PVector(x, y);
     velocity = new PVector(0, 0);
-    maxSpeed = 2;
-    maxAcceleration = 0.4;
+    maxSpeed = MAX_SPEED;
+    maxAcceleration = MAX_ACCELERATION;
     acceleration = new PVector(0, 0);
-    oldTarget = new PVector(0, 0);
   }
 
   void update() {
-    PVector newTarget = new PVector(mouseX, mouseY);
-    boolean sameTarget = (newTarget.x == oldTarget.x  && newTarget.y == oldTarget.y);
-
-    PVector dir = PVector.sub(newTarget, location);
-
-    dir.normalize();
-    acceleration = dir.mult(maxAcceleration);
-    oldTarget = newTarget;
-
+    acceleration.limit(maxAcceleration);
     velocity.add(acceleration);
     velocity.limit(maxSpeed);
     location.add(velocity);
+    acceleration.mult(0);
   }
 
+  void seek(PVector target) {
+    PVector desired = PVector.sub(target, location);
+    desired.normalize();
+    desired.mult(maxSpeed);
+    PVector steer = PVector.sub(desired, velocity);
+    steer.limit(maxAcceleration);
+    applyForce(steer);
+  }
+  
+  void applyForce(PVector force) {
+    acceleration.add(force);
+  }
+  
   void display() {
+    float theta = velocity.heading() + PI/2;
+
     stroke(0);
     strokeWeight(2);
-
     fill(240);
-    ellipse(location.x, location.y, 24, 24);
+    pushMatrix();
+    translate(location.x, location.y);
+    rotate(theta);
+    beginShape();
+    vertex(0, -size*2);
+    vertex(-size, size*2);
+    vertex(size, size*2);
+    endShape(CLOSE);
+    popMatrix();
   }
 
   void checkEdges() {
