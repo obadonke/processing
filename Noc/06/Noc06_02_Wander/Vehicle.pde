@@ -12,6 +12,9 @@ class Vehicle {
   float maxAcceleration;
   float size = 3;
 
+  PVector wanderCenter;
+  PVector futureLocation;
+
   Vehicle(float x, float y, float r) {
     size = r;
     location = new PVector(x, y);
@@ -31,15 +34,14 @@ class Vehicle {
 
   void wander() {
     // choose a new target based on current velocity
-    PVector futureLocation = velocity.copy();
-    futureLocation.normalize();
-    futureLocation.mult(WANDER_ARM_LENGTH);
+    wanderCenter = velocity.copy();
+    wanderCenter.normalize();
+    wanderCenter.mult(WANDER_ARM_LENGTH);
     float theta = random(TWO_PI);
-    PVector circlePoint = new PVector(sin(theta), cos(theta));
-    circlePoint.mult(WANDER_RADIUS);
-    futureLocation.add(circlePoint);
-    futureLocation.add(location);
-    seek(futureLocation);
+    futureLocation = new PVector(sin(theta), cos(theta));
+    futureLocation.mult(WANDER_RADIUS);
+    futureLocation.add(wanderCenter);
+    seek(PVector.add(location, futureLocation));
   }
   void seek(PVector target) {
     PVector desired = PVector.sub(target, location);
@@ -64,11 +66,23 @@ class Vehicle {
   void display() {
     float theta = velocity.heading() + PI/2;
 
+
+    pushMatrix();
+    translate(location.x, location.y);
+
+    if (DRAW_WANDER_DIAG) {
+      stroke(200);
+      strokeWeight(1);
+      noFill();
+      ellipseMode(CENTER);
+      ellipse(wanderCenter.x, wanderCenter.y, WANDER_RADIUS*2, WANDER_RADIUS*2);
+      line(0,0, wanderCenter.x, wanderCenter.y);
+      line(wanderCenter.x, wanderCenter.y, futureLocation.x, futureLocation.y);
+    }
+
     stroke(0);
     strokeWeight(2);
     fill(240);
-    pushMatrix();
-    translate(location.x, location.y);
     rotate(theta);
     beginShape();
     vertex(0, -size*2);
