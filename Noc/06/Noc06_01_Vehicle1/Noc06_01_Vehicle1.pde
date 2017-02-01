@@ -2,12 +2,10 @@
 
 import java.util.Random;
 
-int NUM_VEHICLES = 3;
-float MAX_SPEED = 6;
-float MAX_ACCELERATION = 1;
-int totalPixels;
-final float distanceStep = 15;
-final float maxDistanceRange = 12;
+final int NUM_VEHICLES = 3;
+final float MAX_SPEED = 6;
+final float MAX_ACCELERATION = 0.6;
+final float APPROACH_DISTANCE = MAX_SPEED*10;
 
 ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 Random generator = new Random();
@@ -15,7 +13,6 @@ Random generator = new Random();
 void setup() {
   size(640, 640);
   background(255);
-  totalPixels = width*height;
 
   for (int i = 0; i < NUM_VEHICLES; i++) {
     vehicles.add(new Vehicle(random(width), random(height), 5));
@@ -27,6 +24,7 @@ void draw() {
 }
 
 void fadeBackground() {
+  int totalPixels = width*height;
   loadPixels();
   for (int i = 0; i < totalPixels; i++) {
     int shade = pixels[i] >> 16 & 0xFF;

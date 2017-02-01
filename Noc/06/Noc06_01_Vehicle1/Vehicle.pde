@@ -11,7 +11,7 @@ class Vehicle {
   float maxSpeed;
   float maxAcceleration;
   float size = 3;
-  
+
   Vehicle(float x, float y, float r) {
     size = r;
     location = new PVector(x, y);
@@ -31,16 +31,24 @@ class Vehicle {
 
   void seek(PVector target) {
     PVector desired = PVector.sub(target, location);
-    desired.limit(maxSpeed);
+
+    float dist = desired.mag();
+    if (dist < APPROACH_DISTANCE) {
+      float speed = map(dist, 0, APPROACH_DISTANCE, 0, maxSpeed);
+      desired.limit(speed);
+    } else {
+      desired.limit(maxSpeed);
+    }
+
     PVector steer = PVector.sub(desired, velocity);
     steer.limit(maxAcceleration);
     applyForce(steer);
   }
-  
+
   void applyForce(PVector force) {
     acceleration.add(force);
   }
-  
+
   void display() {
     float theta = velocity.heading() + PI/2;
 
