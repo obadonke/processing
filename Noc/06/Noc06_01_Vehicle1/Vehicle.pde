@@ -31,8 +31,7 @@ class Vehicle {
 
   void seek(PVector target) {
     PVector desired = PVector.sub(target, location);
-    desired.normalize();
-    desired.mult(maxSpeed);
+    desired.limit(maxSpeed);
     PVector steer = PVector.sub(desired, velocity);
     steer.limit(maxAcceleration);
     applyForce(steer);
