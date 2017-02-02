@@ -1,10 +1,6 @@
 // Nature of Code - page 58-59
-// Modified example of acceleration towards the mouse
-// The Movers will lose interest in the mouse if the mouse is stationary for too many frames.
-// The amount of time before a Mover loses interest is randomised using a Gaussian so that
-// the majority of Movers will lose interest after about 300 frames.
 
-class Vehicle {
+class Vehicle implements IVehicle {
   PVector location;
   PVector velocity;
   PVector acceleration;
@@ -12,19 +8,35 @@ class Vehicle {
   float maxAcceleration;
   float size = 3;
 
-  PVector wanderCenter;
-  PVector futureLocation;
+  ITarget target;
 
-  Vehicle(float x, float y, float r) {
+  private final ITarget myTargetIdentity = new ITarget() {
+    void displayTarget() {
+    }
+    void updateTarget(IVehicle v) {
+    }
+    PVector getTargetLocation() { 
+      return Vehicle.this.location;
+    }
+  };
+
+  ITarget asTarget() {
+    return myTargetIdentity;
+  }
+
+  Vehicle(float x, float y, float r, ITarget target) {
     size = r;
     location = new PVector(x, y);
     velocity = PVector.random2D();
     maxSpeed = MAX_SPEED;
     maxAcceleration = MAX_ACCELERATION;
     acceleration = new PVector(0, 0);
+    this.target = target;
   }
 
   void update() {
+    seek(target.getTargetLocation());
+
     acceleration.limit(maxAcceleration);
     velocity.add(acceleration);
     velocity.limit(maxSpeed);
@@ -32,17 +44,6 @@ class Vehicle {
     acceleration.mult(0);
   }
 
-  void wander() {
-    // choose a new target based on current velocity
-    wanderCenter = velocity.copy();
-    wanderCenter.normalize();
-    wanderCenter.mult(WANDER_ARM_LENGTH);
-    float theta = random(TWO_PI);
-    futureLocation = new PVector(sin(theta), cos(theta));
-    futureLocation.mult(WANDER_RADIUS);
-    futureLocation.add(wanderCenter);
-    seek(PVector.add(location, futureLocation));
-  }
   void seek(PVector target) {
     PVector desired = PVector.sub(target, location);
 
@@ -70,16 +71,6 @@ class Vehicle {
     pushMatrix();
     translate(location.x, location.y);
 
-    if (DRAW_WANDER_DIAG) {
-      stroke(200);
-      strokeWeight(1);
-      noFill();
-      ellipseMode(CENTER);
-      ellipse(wanderCenter.x, wanderCenter.y, WANDER_RADIUS*2, WANDER_RADIUS*2);
-      line(0,0, wanderCenter.x, wanderCenter.y);
-      line(wanderCenter.x, wanderCenter.y, futureLocation.x, futureLocation.y);
-    }
-
     stroke(0);
     strokeWeight(2);
     fill(240);
@@ -104,5 +95,13 @@ class Vehicle {
     } else if (location.y < 0) {
       location.y = height;
     }
+  }
+  
+  PVector getVelocity() {
+    return velocity.copy();
+  }
+
+  PVector getLocation() {
+    return location.copy();
   }
 }

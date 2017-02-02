@@ -11,6 +11,7 @@ final float WANDER_RADIUS = WANDER_ARM_LENGTH/2.5;
 final boolean DRAW_WANDER_DIAG = false;
 
 ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+
 Random generator = new Random();
 
 void setup() {
@@ -19,9 +20,12 @@ void setup() {
   NUM_VEHICLES = DRAW_WANDER_DIAG ? 10 : NUM_VEHICLES;
   frameRate(DRAW_WANDER_DIAG ? 10 : 60);
   for (int i = 0; i < NUM_VEHICLES; i++) {
-    vehicles.add(new Vehicle(random(width), random(height), 5));
+    ITarget target = new WanderTarget();
+    Vehicle v = new Vehicle(random(width), random(height), 5, target);
+    vehicles.add(v);
   }
 }
+
 void draw() {
   fadeBackground();
   updateTheVehicles();
@@ -40,8 +44,12 @@ void fadeBackground() {
 
 
 void updateTheVehicles() {
-  for (Vehicle v: vehicles) {
-    v.wander();
+  for (Vehicle v : vehicles) {
+    v.target.updateTarget(v);
+    if (DRAW_WANDER_DIAG) {
+      v.target.displayTarget();
+    }
+
     v.update();
     v.checkEdges();
     v.display();
