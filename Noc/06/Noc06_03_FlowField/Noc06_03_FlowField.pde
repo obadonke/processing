@@ -35,7 +35,9 @@ void setup() {
 
 void draw() {
   fadeBackground();
-  //flowField.display();
+  if (DRAW_WANDER_DIAG || mouseButton == LEFT) {
+    flowField.display();
+  }
   updateTheVehicles();
 }
 
@@ -57,10 +59,7 @@ void resetBackground() {
 void updateTheVehicles() {
   for (Vehicle v : vehicles) {
     v.target.updateTarget(v);
-    if (DRAW_WANDER_DIAG) {
-      v.target.displayTarget();
-    }
-
+    
     v.update();
     v.checkEdges();
     v.display();
@@ -75,6 +74,8 @@ void drawHelpText() {
 }
 
 void mouseReleased() {
-  resetBackground();
-  flowField.shiftField(1.0);
+  if (mouseButton != LEFT) {
+    resetBackground();
+    flowField.shiftField(1.0);
+  }
 }
