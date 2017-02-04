@@ -1,6 +1,8 @@
+
 class FlowField {
   PVector[][] field;
 
+  final color FLOW_ARROW_COLOR = color(255,255,0);
   int cols, rows;
   int resolution;
   float noiseOffset;
@@ -73,6 +75,7 @@ class FlowField {
 
 
   private void drawFlowArrow(float centerX, float centerY, float halfArrowLength, PVector arrowVector) {
+    stroke(FLOW_ARROW_COLOR);
     pushMatrix();
     translate(centerX, centerY);
     rotate(arrowVector.heading());
