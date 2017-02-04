@@ -19,8 +19,8 @@ void setup() {
   background(255);
   NUM_VEHICLES = DRAW_WANDER_DIAG ? 10 : NUM_VEHICLES;
   frameRate(DRAW_WANDER_DIAG ? 10 : 60);
+  ITarget target = new WanderTarget();
   for (int i = 0; i < NUM_VEHICLES; i++) {
-    ITarget target = new WanderTarget();
     Vehicle v = new Vehicle(random(width), random(height), 5, target);
     vehicles.add(v);
   }
@@ -45,12 +45,10 @@ void fadeBackground() {
 
 void updateTheVehicles() {
   for (Vehicle v : vehicles) {
-    v.target.updateTarget(v);
-    if (DRAW_WANDER_DIAG) {
-      v.target.displayTarget();
-    }
-
     v.update();
+    if (DRAW_WANDER_DIAG) {
+      v.target.display();
+    }
     v.checkEdges();
     v.display();
   }

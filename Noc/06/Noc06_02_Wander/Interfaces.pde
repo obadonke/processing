@@ -4,7 +4,6 @@ interface IVehicle {
 }
 
 interface ITarget {
-  void updateTarget(IVehicle hunter);
-  void displayTarget();
-  PVector getTargetLocation();
+  void display();
+  PVector getLocation(IVehicle hunter);
 }

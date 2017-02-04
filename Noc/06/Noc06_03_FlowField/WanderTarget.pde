@@ -8,7 +8,7 @@ class WanderTarget implements ITarget {
 
   PVector getLocation(IVehicle hunter) {
     // move to a new location based on hunter's current velocity
-    PVector hunterLocation = hunter.getLocation();
+    hunterLocation = hunter.getLocation();
     wanderCenter = hunter.getVelocity();
     wanderCenter.normalize();
     wanderCenter.mult(WANDER_ARM_LENGTH);
@@ -21,6 +21,8 @@ class WanderTarget implements ITarget {
   }
 
   void display() {
+    if (hunterLocation == null || wanderCenter == null) return;
+    
     stroke(200);
     strokeWeight(1);
     noFill();
