@@ -28,7 +28,7 @@ FlowField flowField;
 FlowFieldTarget flowTarget;
 
 void setup() {
-  size(1920, 1200);
+  size(800, 800);
   frameRate(DIAGNOSTIC_MODE ? 10 : 60);
   drawFlow = DIAGNOSTIC_MODE || DRAW_FIELD_FLOW;
   drawTrails = DRAW_TRAILS && !drawFlow;
