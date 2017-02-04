@@ -28,7 +28,7 @@ FlowField flowField;
 FlowFieldTarget flowTarget;
 
 void setup() {
-  size(800, 800);
+  size(1920, 1200);
   frameRate(DIAGNOSTIC_MODE ? 10 : 60);
   drawFlow = DIAGNOSTIC_MODE || DRAW_FIELD_FLOW;
   drawTrails = DRAW_TRAILS && !drawFlow;
@@ -103,9 +103,8 @@ void updateTheVehicles() {
   }
 }
 
-void drawHelpText() {
-  fill(255);
-  textSize(14);
-  text("NO MB = Attraction proportional to distance from mouse.", 0, 20);
-  text("LEFT MB = Inverse.", 0, 40);
+void mousePressed() {
+  fadeBackground();
+  save("Screenshot");
+  println("Screenshot saved");
 }
