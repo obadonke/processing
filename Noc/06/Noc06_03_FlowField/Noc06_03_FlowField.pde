@@ -2,54 +2,67 @@
 
 import java.util.Random;
 
-int NUM_VEHICLES = 100;
-final float MAX_SPEED = 4;
+final boolean DIAGNOSTIC_MODE = false;
+final int NUM_VEHICLES = 150;
+final int DIAG_NUM_VEHICLES = 1;
+final float MAX_SPEED = 6;
 final float MAX_ACCELERATION = 0.3;
 final float APPROACH_DISTANCE = MAX_SPEED*10;
 final float WANDER_ARM_LENGTH = 100;
 final float WANDER_RADIUS = WANDER_ARM_LENGTH/2.5;
-final boolean DRAW_WANDER_DIAG = false;
 final boolean ALLOW_ARRIVAL = false;
-final float FIELD_NOISE_SCALE = 0.5;
-final float FIELD_NOISE_INCREMENT = 1.0;
+final boolean DRAW_TRAILS = true;
+final boolean ALWAYS_DRAW_FIELD_FLOW = false;
+final float FIELD_NOISE_SCALE = 0.01;
+final float FIELD_NOISE_INCREMENT = 0.1;
+final int FIELD_FRAMES_PER_INCREMENT = 10;
+
 final int RESOLUTION = 20;
+final float TARGET_LOOK_AHEAD = RESOLUTION;
 
 ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
 Random generator = new Random();
 FlowField flowField;
-FlowFieldTargetFactory ffTargetFactory;
+FlowFieldTarget flowTarget;
 
 void setup() {
   size(640, 640);
-  NUM_VEHICLES = DRAW_WANDER_DIAG ? 1 : NUM_VEHICLES;
-  frameRate(DRAW_WANDER_DIAG ? 10 : 60);
+  frameRate(DIAGNOSTIC_MODE ? 10 : 60);
 
   flowField = new FlowField(RESOLUTION);
-  ffTargetFactory = new FlowFieldTargetFactory(flowField);
-  float vehicleSpacing = (width*height)/NUM_VEHICLES;
-  float currentVehicleLocation = vehicleSpacing/2.0;
-  for (int i = 0; i < NUM_VEHICLES; i++) {
-    ITarget target = ffTargetFactory.createTarget();
-    float vy = currentVehicleLocation/width;
-    float vx = currentVehicleLocation % width;
-    Vehicle v = new Vehicle(vx, vy, 5, target);
-    vehicles.add(v);
-    currentVehicleLocation += vehicleSpacing;
-  }
+  flowTarget = new FlowFieldTarget(flowField);
+  createVehicles();
   resetBackground();
 }
 
+void createVehicles() {
+  int numVehicles = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
+  float vehicleSpacing = (width*height)/numVehicles;
+  println("Vehicle spacing = " + vehicleSpacing + " % width = " + (vehicleSpacing % width));
+  float currentVehicleOffset = 0;
+  for (int i = 0; i < numVehicles; i++) {
+    float vehicleLocation = currentVehicleOffset + random(vehicleSpacing/1.5);
+    float vy = floor(vehicleLocation/width);
+    float vx = vehicleLocation % width;
+    Vehicle v = new Vehicle(vx, vy, 5, flowTarget);
+    vehicles.add(v);
+    currentVehicleOffset += vehicleSpacing;
+  }
+}
+
 void draw() {
-  fadeBackground();
-  if (frameCount % 100 == 0) {
+  if (DRAW_TRAILS) {
+    fadeBackground();
+  } else {
+    resetBackground();
+  }
+  
+  if (ALWAYS_DRAW_FIELD_FLOW || (frameCount % FIELD_FRAMES_PER_INCREMENT == 0)) {
     flowField.shiftField(FIELD_NOISE_INCREMENT);
     flowField.display();
   }
-  
-  if (DRAW_WANDER_DIAG || mouseButton == LEFT) {
-    flowField.display();
-  }
+
   updateTheVehicles();
 }
 
@@ -70,8 +83,6 @@ void resetBackground() {
 
 void updateTheVehicles() {
   for (Vehicle v : vehicles) {
-    v.target.updateTarget(v);
-    
     v.update();
     v.checkEdges();
     v.display();

@@ -11,11 +11,10 @@ class Vehicle implements IVehicle {
   ITarget target;
 
   private final ITarget myTargetIdentity = new ITarget() {
-    void displayTarget() {
+    void display() {
     }
-    void updateTarget(IVehicle v) {
-    }
-    PVector getTargetLocation() { 
+
+    PVector getLocation(IVehicle vehicle) { 
       return Vehicle.this.location;
     }
   };
@@ -35,7 +34,7 @@ class Vehicle implements IVehicle {
   }
 
   void update() {
-    seek(target.getTargetLocation());
+    seek(target.getLocation(this));
 
     acceleration.limit(maxAcceleration);
     velocity.add(acceleration);
