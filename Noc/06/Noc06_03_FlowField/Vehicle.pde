@@ -48,7 +48,7 @@ class Vehicle implements IVehicle {
     PVector desired = PVector.sub(target, location);
 
     float dist = desired.mag();
-    if (dist < APPROACH_DISTANCE) {
+    if (ALLOW_ARRIVAL && dist < APPROACH_DISTANCE) {
       float speed = map(dist, 0, APPROACH_DISTANCE, 0, maxSpeed);
       desired.limit(speed);
     } else {

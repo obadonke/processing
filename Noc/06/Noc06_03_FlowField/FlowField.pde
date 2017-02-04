@@ -4,7 +4,7 @@ class FlowField {
   int cols, rows;
   int resolution;
   float noiseOffset;
-  final float noiseScale = NOISE_SCALE;
+  final float noiseScale = FIELD_NOISE_SCALE;
   int cellWidth;
   int cellHeight;
 
