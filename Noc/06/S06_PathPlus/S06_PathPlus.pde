@@ -2,12 +2,13 @@
 
 final boolean DIAGNOSTIC_MODE = false;
 final int NUM_VEHICLES = 30;
-final int DIAG_NUM_VEHICLES = 2;
+final int DIAG_NUM_VEHICLES = 4;
 final float MAX_SPEED = 6;
 final float MAX_ACCELERATION = 0.3;
 final float APPROACH_DISTANCE = MAX_SPEED*10;
 final float LOOK_AHEAD = MAX_SPEED*8;
 final boolean ALLOW_ARRIVAL = false;
+final boolean ALLOW_REVERSE = true;
 float noiseOffset = 1000;
 float noiseScale = 0.003;
 ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
@@ -15,9 +16,9 @@ SimplePath path;
 
 void setup() {
   size(640, 640);
-  frameRate(DIAGNOSTIC_MODE ? 10 : 60);
+  frameRate(DIAGNOSTIC_MODE ? 20 : 60);
   resetBackground();
-  path = new SimplePath(new PVector(0, height/3), new PVector(width, 2*height/3), 30);
+  path = new SimplePath(new PVector(100, height/3), new PVector(width-100, 2*height/3), 30);
   updatePath();
   int numVehicles = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
   ITarget target = new PathTarget(path);

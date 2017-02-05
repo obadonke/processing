@@ -24,6 +24,17 @@ class Path {
     }
     endShape();
   }
+  
+  PVector getLineNormalPoint(PVector start, PVector end, PVector point) {
+    PVector pathToPoint = PVector.sub(point, start);
+    PVector lineVector = PVector.sub(end, start);
+    float lineLength = lineVector.mag();
+    lineVector.normalize();
+    float distFromStartToNormalPoint = constrain(pathToPoint.dot(lineVector),0,lineLength);
+    lineVector.mult(distFromStartToNormalPoint);
+    lineVector.add(start);
+    return lineVector;
+ }
 }
 
 class SimplePath {
@@ -50,13 +61,7 @@ class SimplePath {
   }
   
   PVector getNormalPoint(PVector point) {
-    PVector pathToPoint = PVector.sub(point, start);
-    PVector pathVector = PVector.sub(end, start);
-    pathVector.normalize();
-    float distFromStartToNormalPoint = pathToPoint.dot(pathVector);
-    pathVector.mult(distFromStartToNormalPoint);
-    pathVector.add(start);
-    return pathVector;
+    return path.getLineNormalPoint(start, end, point);
  }
 
 }

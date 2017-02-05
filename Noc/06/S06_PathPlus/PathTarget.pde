@@ -14,6 +14,7 @@ class PathTarget implements ITarget {
     PVector hunterLocation = hunter.getLocation();
     PVector predictedLocation = hunter.getVelocity();
     predictedLocation.normalize();
+    float dotPathPredictedLocation = pathVector.dot(predictedLocation);
     predictedLocation.mult(LOOK_AHEAD);
     predictedLocation.add(hunterLocation);
     
@@ -26,7 +27,8 @@ class PathTarget implements ITarget {
     
     // course correct
     targetLocation = pathVector.copy();
-    targetLocation.mult(LOOK_AHEAD);
+    float lookAhead = ALLOW_REVERSE && (dotPathPredictedLocation < 0) ? -LOOK_AHEAD : LOOK_AHEAD;
+    targetLocation.mult(lookAhead);
     targetLocation.add(pathNormalPoint);
     return targetLocation;
   }
