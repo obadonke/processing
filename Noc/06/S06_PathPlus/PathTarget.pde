@@ -1,14 +1,15 @@
 class PathTarget implements ITarget {
-  SimplePath path;
+  Path path;
   PVector targetLocation;
   PVector pathVector;
   
-  PathTarget(SimplePath p) {
+  PathTarget(Path p) {
     path = p;
   }
   
   PVector getLocation(IVehicle hunter) {
-    pathVector = PVector.sub(path.end, path.start);
+    Path.Segment seg = path.getSegmentClosestToPoint(hunter.getLocation());
+    pathVector = PVector.sub(seg.end, seg.start);
     pathVector.normalize();
 
     PVector hunterLocation = hunter.getLocation();
@@ -18,7 +19,7 @@ class PathTarget implements ITarget {
     predictedLocation.mult(LOOK_AHEAD);
     predictedLocation.add(hunterLocation);
     
-    PVector pathNormalPoint = path.getNormalPoint(predictedLocation);
+    PVector pathNormalPoint = seg.lineNormalPoint.copy();
     float distPredictFromNormal = pathNormalPoint.dist(predictedLocation);
     
     if (distPredictFromNormal < path.getRadius()/2) {

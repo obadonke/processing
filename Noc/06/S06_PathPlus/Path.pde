@@ -1,10 +1,29 @@
 class Path {
+  class Segment {
+    PVector start;
+    PVector end;
+    PVector lineNormalPoint;
+    
+    Segment() {
+    }
+    
+    Segment(PVector s, PVector e, PVector lnp) {
+      start = s;
+      end = e;
+      lineNormalPoint = lnp;
+    }
+  }
+  
   ArrayList<PVector> points;
   float radius;
   
   Path(ArrayList<PVector> points, float r) {
     this.points = points;
     radius = r;
+  }
+  
+  void setPoints(ArrayList<PVector> points) {
+    this.points = points;
   }
   
   void display() {
@@ -35,33 +54,30 @@ class Path {
     lineVector.add(start);
     return lineVector;
  }
-}
-
-class SimplePath {
-  Path path;
-  PVector start;
-  PVector end;
-  
-  SimplePath(PVector s, PVector e, float r) {
-    start = s;
-    end = e;
-    ArrayList<PVector> pathPoints = new ArrayList<PVector>();
-    pathPoints.add(s);
-    pathPoints.add(e);
-    
-    path = new Path(pathPoints, r);
-  }
-  
-  void display() {
-    path.display();
-  }
-  
-  float getRadius() {
-    return path.radius;
-  }
-  
-  PVector getNormalPoint(PVector point) {
-    return path.getLineNormalPoint(start, end, point);
+ 
+ Segment getSegmentClosestToPoint(PVector point) {
+   Iterator<PVector> iterator = points.iterator();
+   Segment seg = new Segment();
+   
+   float minDistFromSeg = Float.MAX_VALUE;
+   PVector segStart = iterator.next();
+   PVector segEnd;
+   while (iterator.hasNext()) {
+     segEnd = iterator.next();
+     PVector np = getLineNormalPoint(segStart, segEnd, point);
+     float dist = np.dist(point);
+     if (dist < minDistFromSeg) {
+       seg.lineNormalPoint = np;
+       seg.start = segStart;
+       seg.end = segEnd;
+       minDistFromSeg = dist;
+     }
+     segStart = segEnd;
+   }
+   return seg;
  }
 
+  float getRadius() {
+    return radius;
+  }
 }

@@ -1,24 +1,30 @@
-// Nature of Code Exercise 1.8 Acceleration with Mouse Attraction
+import java.util.Iterator;
 
 final boolean DIAGNOSTIC_MODE = false;
 final int NUM_VEHICLES = 30;
 final int DIAG_NUM_VEHICLES = 4;
 final float MAX_SPEED = 6;
-final float MAX_ACCELERATION = 0.3;
+final float MAX_ACCELERATION = 0.4;
 final float APPROACH_DISTANCE = MAX_SPEED*10;
-final float LOOK_AHEAD = MAX_SPEED*8;
+final float ROAD_RADIUS = 30;
+final float LOOK_AHEAD = ROAD_RADIUS*2;
 final boolean ALLOW_ARRIVAL = false;
-final boolean ALLOW_REVERSE = true;
+final boolean ALLOW_REVERSE = false;
 float noiseOffset = 1000;
-float noiseScale = 0.003;
+float noiseWidth = 1;
+float noisePan = 0.002;
+final int NUM_SEGMENTS = 40;
 ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
-SimplePath path;
+Path path;
 
 void setup() {
-  size(640, 640);
+  size(800, 640);
   frameRate(DIAGNOSTIC_MODE ? 20 : 60);
   resetBackground();
-  path = new SimplePath(new PVector(100, height/3), new PVector(width-100, 2*height/3), 30);
+  ArrayList<PVector> points = createTrack();
+  
+  path = new Path(points, ROAD_RADIUS);
+  
   updatePath();
   int numVehicles = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
   ITarget target = new PathTarget(path);
@@ -41,9 +47,9 @@ void resetBackground() {
 }
 
 void updatePath() {
-  //path.start.y = map(noise(noiseOffset),0,1,0, height);
-  //path.end.y = map(noise(noiseOffset*2),0,1,0, height);
-  //noiseOffset += noiseScale;
+  noiseOffset += noisePan;
+  ArrayList<PVector> points = createTrack();
+  path.setPoints(points);
 }
 
 void updateTheVehicles() {
@@ -55,6 +61,18 @@ void updateTheVehicles() {
     v.checkEdges();
     v.display();
   }
+}
+
+ArrayList<PVector> createTrack() {
+  ArrayList<PVector> points = new ArrayList<PVector>();
+  float noiseIncrement = noiseWidth/NUM_SEGMENTS;
+  int segWidth = width/NUM_SEGMENTS;
+  for (int i = 0; i <= NUM_SEGMENTS; i++) {
+    float x = segWidth*i;
+    float y = map(noise(noiseOffset+noiseIncrement*i),0,1,50,height-50);
+    points.add(new PVector(x, y));
+  }
+  return points;
 }
 
 void drawHelpText() {
