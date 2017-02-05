@@ -22,7 +22,7 @@ class PathTarget implements ITarget {
     PVector pathNormalPoint = seg.lineNormalPoint.copy();
     float distPredictFromNormal = pathNormalPoint.dist(predictedLocation);
     
-    if (distPredictFromNormal < path.getRadius()/2) {
+    if (distPredictFromNormal < path.getRadius()) {
       return predictedLocation;
     }
     
