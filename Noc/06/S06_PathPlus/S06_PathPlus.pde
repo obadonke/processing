@@ -1,7 +1,7 @@
 import java.util.Iterator;
 
 final boolean DIAGNOSTIC_MODE = false;
-final int NUM_VEHICLES = 10;
+final int NUM_VEHICLES = 200;
 final int DIAG_NUM_VEHICLES = 4;
 final float MAX_SPEED = 5;
 final float MAX_ACCELERATION = 0.4;
@@ -11,7 +11,8 @@ final float LOOK_AHEAD = ROAD_RADIUS*2;
 final float MIN_SEPARATION = 20;
 
 final boolean ALLOW_ARRIVAL = true;
-final boolean ALLOW_REVERSE = false;
+final boolean ALLOW_REVERSE = true;
+final boolean DRAW_PATH = true;
 float noiseOffset = 1000;
 float noiseWidth = 2;
 float noisePan = 0.002;
@@ -21,7 +22,7 @@ Path path;
 SeparationBehaviour separationBehaviour = new SeparationBehaviour(vehicles);
 
 void setup() {
-  size(800, 640);
+  size(640, 640);
   frameRate(DIAGNOSTIC_MODE ? 20 : 60);
   resetBackground();
   ArrayList<PVector> points = createTrack();
@@ -40,7 +41,7 @@ void setup() {
 void draw() {
   updatePath();
   resetBackground();
-  path.display();
+  if (DRAW_PATH) path.display();
   updateTheVehicles();
   
 }

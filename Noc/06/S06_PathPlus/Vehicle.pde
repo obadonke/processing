@@ -37,10 +37,10 @@ class Vehicle implements IVehicle {
   }
 
   void applyBehaviours() {
-    //PVector behaviourForce = behaviour.getForce(this);
-    //applyForce(behaviourForce);
     PVector seekForce = calcSeekForce(target.getLocation(this));
     applyForce(seekForce);
+    PVector behaviourForce = behaviour.getForce(this);
+    applyForce(behaviourForce);
   }
   
   void update() {

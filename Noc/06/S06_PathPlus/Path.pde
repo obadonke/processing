@@ -28,7 +28,7 @@ class Path {
   
   void display() {
     strokeWeight(radius*2);
-    stroke(0,100);
+    stroke(0,50);
     noFill();
     drawLine();
     strokeWeight(1);
