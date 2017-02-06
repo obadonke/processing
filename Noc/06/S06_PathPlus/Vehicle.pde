@@ -9,7 +9,8 @@ class Vehicle implements IVehicle {
   float size = 3;
 
   ITarget target;
-
+  IBehaviour behaviour;
+  
   private final ITarget myTargetIdentity = new ITarget() {
     void display() {
     }
@@ -23,27 +24,26 @@ class Vehicle implements IVehicle {
     return myTargetIdentity;
   }
 
-  Vehicle(float x, float y, float r, ITarget target) {
+  Vehicle(float x, float y, float r, ITarget target, IBehaviour behaviour) {
     size = r;
     location = new PVector(x, y);
     velocity = PVector.random2D();
+    velocity.setMag(MAX_SPEED);
     maxSpeed = MAX_SPEED;
     maxAcceleration = MAX_ACCELERATION;
-    acceleration = new PVector(0, 0);
+    acceleration = new PVector(0,0);
     this.target = target;
+    this.behaviour = behaviour;
   }
 
-  void update() {
-    applyBehaviours();
-    updateLocation();
-  }
-
-  private void applyBehaviours() {
+  void applyBehaviours() {
+    //PVector behaviourForce = behaviour.getForce(this);
+    //applyForce(behaviourForce);
     PVector seekForce = calcSeekForce(target.getLocation(this));
     applyForce(seekForce);
   }
   
-  private void updateLocation() {
+  void update() {
     acceleration.limit(maxAcceleration);
     velocity.add(acceleration);
     velocity.limit(maxSpeed);
@@ -62,8 +62,12 @@ class Vehicle implements IVehicle {
       desired.limit(maxSpeed);
     }
 
+    return calcSteerForceFromDesired(desired);
+  }
+
+  PVector calcSteerForceFromDesired(PVector desired) {
     PVector steer = PVector.sub(desired, velocity);
-    steer.limit(maxAcceleration);
+    steer.limit(maxSpeed);
     return steer;
   }
 

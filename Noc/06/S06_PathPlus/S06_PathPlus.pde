@@ -1,13 +1,15 @@
 import java.util.Iterator;
 
 final boolean DIAGNOSTIC_MODE = false;
-final int NUM_VEHICLES = 30;
+final int NUM_VEHICLES = 10;
 final int DIAG_NUM_VEHICLES = 4;
 final float MAX_SPEED = 5;
 final float MAX_ACCELERATION = 0.4;
 final float APPROACH_DISTANCE = MAX_SPEED*10;
 final float ROAD_RADIUS = 30;
 final float LOOK_AHEAD = ROAD_RADIUS*2;
+final float MIN_SEPARATION = 20;
+
 final boolean ALLOW_ARRIVAL = true;
 final boolean ALLOW_REVERSE = false;
 float noiseOffset = 1000;
@@ -16,6 +18,7 @@ float noisePan = 0.002;
 final int NUM_SEGMENTS = 100;
 ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 Path path;
+SeparationBehaviour separationBehaviour = new SeparationBehaviour(vehicles);
 
 void setup() {
   size(800, 640);
@@ -29,7 +32,7 @@ void setup() {
   int numVehicles = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
   ITarget target = new PathTarget(path);
   for (int i = 0; i < numVehicles; i++) {
-    Vehicle v = new Vehicle(random(width), random(height), 5, target);
+    Vehicle v = new Vehicle(random(width), random(height), 5, target, separationBehaviour);
     vehicles.add(v);
   }
 }
@@ -54,6 +57,7 @@ void updatePath() {
 
 void updateTheVehicles() {
   for (Vehicle v : vehicles) {
+    v.applyBehaviours();
     v.update();
     if (DIAGNOSTIC_MODE) {
       v.target.display();
