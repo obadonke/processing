@@ -9,7 +9,7 @@ final float APPROACH_DISTANCE = MAX_SPEED*10;
 final float ROAD_RADIUS = 30;
 final float LOOK_AHEAD = ROAD_RADIUS*2;
 final boolean ALLOW_ARRIVAL = true;
-final boolean ALLOW_REVERSE = true;
+final boolean ALLOW_REVERSE = false;
 float noiseOffset = 1000;
 float noiseWidth = 2;
 float noisePan = 0.002;
@@ -65,19 +65,14 @@ void updateTheVehicles() {
 
 ArrayList<PVector> createTrack() {
   ArrayList<PVector> points = new ArrayList<PVector>();
+  float maxRadius = min(width, height) * 0.45;
   float noiseIncrement = noiseWidth/NUM_SEGMENTS;
-  int segWidth = width/NUM_SEGMENTS;
-  for (int i = 0; i <= NUM_SEGMENTS; i++) {
-    float x = segWidth*i;
-    float y = map(noise(noiseOffset+noiseIncrement*i),0,1,50,height-50);
+  float segWidth = TWO_PI/NUM_SEGMENTS;
+  for (int i = 0; i < NUM_SEGMENTS; i++) {
+    float r = map(noise(noiseOffset+sin(segWidth*i)),0,1,maxRadius/2,maxRadius);
+    float x = width/2 + r*cos(segWidth*i);
+    float y = height/2 + r*sin(segWidth*i);
     points.add(new PVector(x, y));
   }
   return points;
-}
-
-void drawHelpText() {
-  fill(255);
-  textSize(14);
-  text("NO MB = Attraction proportional to distance from mouse.", 0, 20);
-  text("LEFT MB = Inverse.", 0, 40);
 }
