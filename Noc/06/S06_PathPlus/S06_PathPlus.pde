@@ -66,12 +66,12 @@ void updateTheVehicles() {
 ArrayList<PVector> createTrack() {
   ArrayList<PVector> points = new ArrayList<PVector>();
   float maxRadius = min(width, height) * 0.45;
-  float noiseIncrement = noiseWidth/NUM_SEGMENTS;
   float segWidth = TWO_PI/NUM_SEGMENTS;
   for (int i = 0; i < NUM_SEGMENTS; i++) {
-    float r = map(noise(noiseOffset+sin(segWidth*i)),0,1,maxRadius/2,maxRadius);
-    float x = width/2 + r*cos(segWidth*i);
-    float y = height/2 + r*sin(segWidth*i);
+    float segAngle = segWidth*i;
+    float r = map(noise(noiseOffset+map(sin(segAngle),-1,1,0,noiseWidth)),0,1,maxRadius/2,maxRadius);
+    float x = width/2 + r*cos(segAngle);
+    float y = height/2 + r*sin(segAngle);
     points.add(new PVector(x, y));
   }
   return points;

@@ -34,20 +34,25 @@ class Vehicle implements IVehicle {
   }
 
   void update() {
-    seek(target.getLocation(this));
+    PVector seekForce = calcSeekForce(target.getLocation(this));
+    applyForce(seekForce);
+    
+    updateLocation();
+  }
 
+  private void updateLocation() {
     acceleration.limit(maxAcceleration);
     velocity.add(acceleration);
     velocity.limit(maxSpeed);
     location.add(velocity);
     acceleration.mult(0);
   }
-
-  void seek(PVector target) {
+  
+  PVector calcSeekForce(PVector target) {
     PVector desired = PVector.sub(target, location);
 
     float dist = desired.mag();
-    if (dist < APPROACH_DISTANCE) {
+    if (dist < APPROACH_DISTANCE && ALLOW_ARRIVAL) {
       float speed = map(dist, 0, APPROACH_DISTANCE, 0, maxSpeed);
       desired.limit(speed);
     } else {
@@ -56,7 +61,7 @@ class Vehicle implements IVehicle {
 
     PVector steer = PVector.sub(desired, velocity);
     steer.limit(maxAcceleration);
-    applyForce(steer);
+    return steer;
   }
 
   void applyForce(PVector force) {
