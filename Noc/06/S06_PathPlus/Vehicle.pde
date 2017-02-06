@@ -34,12 +34,15 @@ class Vehicle implements IVehicle {
   }
 
   void update() {
-    PVector seekForce = calcSeekForce(target.getLocation(this));
-    applyForce(seekForce);
-    
+    applyBehaviours();
     updateLocation();
   }
 
+  private void applyBehaviours() {
+    PVector seekForce = calcSeekForce(target.getLocation(this));
+    applyForce(seekForce);
+  }
+  
   private void updateLocation() {
     acceleration.limit(maxAcceleration);
     velocity.add(acceleration);

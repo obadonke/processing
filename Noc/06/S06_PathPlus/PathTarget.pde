@@ -1,5 +1,6 @@
 class PathTarget implements ITarget {
   Path path;
+  PVector hunterLocation;
   PVector targetLocation;
   PVector pathVector;
   
@@ -12,7 +13,7 @@ class PathTarget implements ITarget {
     pathVector = PVector.sub(seg.end, seg.start);
     pathVector.normalize();
 
-    PVector hunterLocation = hunter.getLocation();
+    hunterLocation = hunter.getLocation();
     PVector predictedLocation = hunter.getVelocity();
     predictedLocation.normalize();
     float dotPathPredictedLocation = pathVector.dot(predictedLocation);
@@ -23,6 +24,7 @@ class PathTarget implements ITarget {
     float distPredictFromNormal = pathNormalPoint.dist(predictedLocation);
     
     if (distPredictFromNormal < path.getRadius()) {
+      targetLocation = predictedLocation;
       return predictedLocation;
     }
     
@@ -35,8 +37,11 @@ class PathTarget implements ITarget {
   }
 
   void display() {
-    //stroke(200);
-    //strokeWeight(1);
-    //noFill();
+    if (hunterLocation == null || targetLocation == null) return;
+    
+    stroke(200);
+    strokeWeight(2);
+    noFill();
+    line(hunterLocation.x, hunterLocation.y, targetLocation.x, targetLocation.y);
   }
 }
