@@ -1,6 +1,8 @@
-final float APPROACH_DISTANCE_FACTOR= 10;
 
 class SeekBehaviour implements IBehaviour {
+  final float APPROACH_DISTANCE_FACTOR= 10;
+  final boolean ALLOW_ARRIVAL = true;
+
   ITarget target;
   float maxSpeed;
   

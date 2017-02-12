@@ -1,5 +1,6 @@
 class PathTarget implements ITarget {
   final float LOOK_AHEAD = 60;
+  final boolean ALLOW_REVERSE = true;
 
   Path path;
   PVector hunterLocation;

@@ -5,8 +5,6 @@ final int NUM_VEHICLES = 200;
 final int DIAG_NUM_VEHICLES = 4;
 final float ROAD_RADIUS = 30;
 
-final boolean ALLOW_ARRIVAL = true;
-final boolean ALLOW_REVERSE = true;
 final boolean DRAW_PATH = true;
 float noiseOffset = 1000;
 float noiseWidth = 2;
@@ -23,14 +21,14 @@ void setup() {
   ArrayList<PVector> points = createTrack();
 
   path = new Path(points, ROAD_RADIUS);
-  ArrayList<IBehaviour> behaviours = new ArrayList<IBehaviour>();
+  ArrayList<WeightedBehaviour> behaviours = new ArrayList<WeightedBehaviour>();
 
   updatePath();
   int numBoids = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
   ITarget target = new PathTarget(path);
   SeekBehaviour seekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
-  behaviours.add(seekBehaviour);
-  behaviours.add(separationBehaviour);
+  behaviours.add(new WeightedBehaviour(seekBehaviour,1.5));
+  behaviours.add(new WeightedBehaviour(separationBehaviour,2));
 
   for (int i = 0; i < numBoids; i++) {
     Boid v = new Boid(random(width), random(height), 5, behaviours);

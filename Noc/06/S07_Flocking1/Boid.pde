@@ -15,7 +15,7 @@ class Boid implements IBoid {
   float maxAcceleration;
   float size = 3;
   
-  ArrayList<IBehaviour> behaviours;
+  ArrayList<WeightedBehaviour> behaviours;
   
   private final ITarget myTargetIdentity = new ITarget() {
     void display() {
@@ -30,7 +30,7 @@ class Boid implements IBoid {
     return myTargetIdentity;
   }
 
-  Boid(float x, float y, float r, ArrayList<IBehaviour> behaviours) {
+  Boid(float x, float y, float r, ArrayList<WeightedBehaviour> behaviours) {
     size = r;
     location = new PVector(x, y);
     velocity = PVector.random2D();
@@ -42,10 +42,19 @@ class Boid implements IBoid {
   }
 
   void applyBehaviours() {
-    for (IBehaviour behaviour: behaviours) {
-      PVector force = behaviour.getForce(this);
+    PVector resultantForce = new PVector(0,0);
+    float totalWeight = 0;
+    for (WeightedBehaviour wb: behaviours) {
+      PVector force = wb.behaviour.getForce(this);
       force.sub(velocity);
-      applyForce(force);
+      force.mult(wb.weight);
+      totalWeight += wb.weight;
+      resultantForce.add(force);
+    }
+    
+    if (totalWeight > 0.001) {
+      resultantForce.div(totalWeight);
+      applyForce(resultantForce);
     }
   }
   
@@ -108,8 +117,8 @@ class Boid implements IBoid {
   }
   
   void debugDisplay() {
-    for (IBehaviour b: behaviours) {
-      b.display();
+    for (WeightedBehaviour wb: behaviours) {
+      wb.behaviour.display();
     }
   }
 }
