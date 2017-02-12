@@ -26,14 +26,19 @@ void setup() {
   frameRate(DIAGNOSTIC_MODE ? 20 : 60);
   resetBackground();
   ArrayList<PVector> points = createTrack();
-  
+
   path = new Path(points, ROAD_RADIUS);
-  
+  ArrayList<IBehaviour> behaviours = new ArrayList<IBehaviour>();
+
   updatePath();
   int numBoids = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
   ITarget target = new PathTarget(path);
+  SeekBehaviour seekBehaviour = new SeekBehaviour(target, MAX_SPEED);
+  behaviours.add(seekBehaviour);
+  behaviours.add(separationBehaviour);
+
   for (int i = 0; i < numBoids; i++) {
-    Boid v = new Boid(random(width), random(height), 5, target, separationBehaviour);
+    Boid v = new Boid(random(width), random(height), 5, behaviours);
     boids.add(v);
   }
 }
@@ -43,7 +48,6 @@ void draw() {
   resetBackground();
   if (DRAW_PATH) path.display();
   updateTheBoids();
-  
 }
 
 void resetBackground() {
@@ -74,7 +78,7 @@ ArrayList<PVector> createTrack() {
   float segWidth = TWO_PI/NUM_SEGMENTS;
   for (int i = 0; i < NUM_SEGMENTS; i++) {
     float segAngle = segWidth*i;
-    float r = map(noise(noiseOffset+map(sin(segAngle),-1,1,0,noiseWidth)),0,1,maxRadius/2,maxRadius);
+    float r = map(noise(noiseOffset+map(sin(segAngle), -1, 1, 0, noiseWidth)), 0, 1, maxRadius/2, maxRadius);
     float x = width/2 + r*cos(segAngle);
     float y = height/2 + r*sin(segAngle);
     points.add(new PVector(x, y));

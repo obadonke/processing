@@ -9,7 +9,7 @@ class Boid implements IBoid {
   float size = 3;
 
   ITarget target;
-  IBehaviour behaviour;
+  ArrayList<IBehaviour> behaviours;
   
   private final ITarget myTargetIdentity = new ITarget() {
     void display() {
@@ -24,7 +24,7 @@ class Boid implements IBoid {
     return myTargetIdentity;
   }
 
-  Boid(float x, float y, float r, ITarget target, IBehaviour behaviour) {
+  Boid(float x, float y, float r, ArrayList<IBehaviour> behaviours) {
     size = r;
     location = new PVector(x, y);
     velocity = PVector.random2D();
@@ -33,14 +33,14 @@ class Boid implements IBoid {
     maxAcceleration = MAX_ACCELERATION;
     acceleration = new PVector(0,0);
     this.target = target;
-    this.behaviour = behaviour;
+    this.behaviours = behaviours;
   }
 
   void applyBehaviours() {
-    PVector seekForce = calcSeekForce(target.getLocation(this));
-    applyForce(seekForce);
-    PVector behaviourForce = behaviour.getForce(this);
-    applyForce(behaviourForce);
+    for (IBehaviour behaviour: behaviours) {
+      PVector force = behaviour.getForce(this);
+      applyForce(force);
+    }
   }
   
   void update() {
@@ -51,26 +51,6 @@ class Boid implements IBoid {
     acceleration.mult(0);
   }
   
-  PVector calcSeekForce(PVector target) {
-    PVector desired = PVector.sub(target, location);
-
-    float dist = desired.mag();
-    if (dist < APPROACH_DISTANCE && ALLOW_ARRIVAL) {
-      float speed = map(dist, 0, APPROACH_DISTANCE, 0, maxSpeed);
-      desired.limit(speed);
-    } else {
-      desired.limit(maxSpeed);
-    }
-
-    return calcSteerForceFromDesired(desired);
-  }
-
-  PVector calcSteerForceFromDesired(PVector desired) {
-    PVector steer = PVector.sub(desired, velocity);
-    steer.limit(maxSpeed);
-    return steer;
-  }
-
   void applyForce(PVector force) {
     acceleration.add(force);
   }
@@ -114,5 +94,11 @@ class Boid implements IBoid {
 
   PVector getLocation() {
     return location.copy();
+  }
+  
+  PVector calcSteerForceFromDesired(PVector desired) {
+    PVector steer = PVector.sub(desired, velocity);
+    steer.limit(maxSpeed);
+    return steer;
   }
 }
