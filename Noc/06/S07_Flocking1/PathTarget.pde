@@ -1,4 +1,6 @@
 class PathTarget implements ITarget {
+  final float LOOK_AHEAD = 60;
+
   Path path;
   PVector hunterLocation;
   PVector targetLocation;

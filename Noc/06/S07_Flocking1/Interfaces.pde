@@ -1,7 +1,8 @@
 interface IBoid {
   PVector getVelocity();
   PVector getLocation();
-  PVector calcSteerForceFromDesired(PVector desired);
+  float getMaxForce();
+  void debugDisplay();
 }
 
 interface ITarget {
@@ -10,5 +11,6 @@ interface ITarget {
 }
 
 interface IBehaviour {
+  void display();
   PVector getForce(IBoid vehicle);
 }

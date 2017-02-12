@@ -3,12 +3,7 @@ import java.util.Iterator;
 final boolean DIAGNOSTIC_MODE = false;
 final int NUM_VEHICLES = 200;
 final int DIAG_NUM_VEHICLES = 4;
-final float MAX_SPEED = 5;
-final float MAX_ACCELERATION = 0.4;
-final float APPROACH_DISTANCE = MAX_SPEED*10;
 final float ROAD_RADIUS = 30;
-final float LOOK_AHEAD = ROAD_RADIUS*2;
-final float MIN_SEPARATION = 20;
 
 final boolean ALLOW_ARRIVAL = true;
 final boolean ALLOW_REVERSE = true;
@@ -33,7 +28,7 @@ void setup() {
   updatePath();
   int numBoids = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
   ITarget target = new PathTarget(path);
-  SeekBehaviour seekBehaviour = new SeekBehaviour(target, MAX_SPEED);
+  SeekBehaviour seekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
   behaviours.add(seekBehaviour);
   behaviours.add(separationBehaviour);
 
@@ -65,7 +60,7 @@ void updateTheBoids() {
     v.applyBehaviours();
     v.update();
     if (DIAGNOSTIC_MODE) {
-      v.target.display();
+      v.debugDisplay();
     }
     v.checkEdges();
     v.display();

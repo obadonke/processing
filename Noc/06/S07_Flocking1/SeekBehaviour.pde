@@ -1,3 +1,5 @@
+final float APPROACH_DISTANCE_FACTOR= 10;
+
 class SeekBehaviour implements IBehaviour {
   ITarget target;
   float maxSpeed;
@@ -16,13 +18,18 @@ class SeekBehaviour implements IBehaviour {
     PVector desired = PVector.sub(target, location);
 
     float dist = desired.mag();
-    if (dist < APPROACH_DISTANCE && ALLOW_ARRIVAL) {
-      float speed = map(dist, 0, APPROACH_DISTANCE, 0, maxSpeed);
+    float approachDistance = APPROACH_DISTANCE_FACTOR*maxSpeed; 
+    if (dist < approachDistance && ALLOW_ARRIVAL) {
+      float speed = map(dist, 0, approachDistance, 0, maxSpeed);
       desired.limit(speed);
     } else {
       desired.limit(maxSpeed);
     }
 
-    return boid.calcSteerForceFromDesired(desired);
+    return desired;
+  }
+  
+  void display() {
+    target.display();
   }
 }

@@ -1,14 +1,20 @@
 // Nature of Code - page 58-59
 
+static class BoidParams {
+  static final float MAX_FORCE = 3;
+  static final float MAX_SPEED = 5;
+  static final float MAX_ACCELERATION = 0.4;
+}
+
 class Boid implements IBoid {
+
   PVector location;
   PVector velocity;
   PVector acceleration;
   float maxSpeed;
   float maxAcceleration;
   float size = 3;
-
-  ITarget target;
+  
   ArrayList<IBehaviour> behaviours;
   
   private final ITarget myTargetIdentity = new ITarget() {
@@ -28,17 +34,17 @@ class Boid implements IBoid {
     size = r;
     location = new PVector(x, y);
     velocity = PVector.random2D();
-    velocity.setMag(MAX_SPEED);
-    maxSpeed = MAX_SPEED;
-    maxAcceleration = MAX_ACCELERATION;
+    maxSpeed = BoidParams.MAX_SPEED;
+    velocity.setMag(BoidParams.MAX_SPEED);
+    maxAcceleration = BoidParams.MAX_ACCELERATION;
     acceleration = new PVector(0,0);
-    this.target = target;
     this.behaviours = behaviours;
   }
 
   void applyBehaviours() {
     for (IBehaviour behaviour: behaviours) {
       PVector force = behaviour.getForce(this);
+      force.sub(velocity);
       applyForce(force);
     }
   }
@@ -52,6 +58,7 @@ class Boid implements IBoid {
   }
   
   void applyForce(PVector force) {
+    force.limit(BoidParams.MAX_FORCE);
     acceleration.add(force);
   }
 
@@ -96,9 +103,13 @@ class Boid implements IBoid {
     return location.copy();
   }
   
-  PVector calcSteerForceFromDesired(PVector desired) {
-    PVector steer = PVector.sub(desired, velocity);
-    steer.limit(maxSpeed);
-    return steer;
+  float getMaxForce() {
+    return BoidParams.MAX_FORCE;
+  }
+  
+  void debugDisplay() {
+    for (IBehaviour b: behaviours) {
+      b.display();
+    }
   }
 }
