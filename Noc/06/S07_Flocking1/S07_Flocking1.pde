@@ -1,8 +1,8 @@
 import java.util.Iterator;
 
 final boolean DIAGNOSTIC_MODE = false;
-final int NUM_VEHICLES = 200;
-final int DIAG_NUM_VEHICLES = 4;
+final int NUM_BOIDS = 200;
+final int DIAG_NUM_BOIDS = 4;
 final float ROAD_RADIUS = 30;
 
 final boolean DRAW_PATH = true;
@@ -10,9 +10,8 @@ float noiseOffset = 1000;
 float noiseWidth = 2;
 float noisePan = 0.002;
 final int NUM_SEGMENTS = 100;
-ArrayList<Boid> boids = new ArrayList<Boid>();
+Flock flock;
 Path path;
-SeparationBehaviour separationBehaviour = new SeparationBehaviour(boids);
 
 void setup() {
   size(640, 640);
@@ -21,29 +20,16 @@ void setup() {
   ArrayList<PVector> points = createTrack();
 
   path = new Path(points, ROAD_RADIUS);
-  ArrayList<WeightedBehaviour> behaviours = new ArrayList<WeightedBehaviour>();
 
   updatePath();
-  int numBoids = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
-  ITarget target = new MouseTarget();
-  SeekBehaviour seekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
-  behaviours.add(new WeightedBehaviour(seekBehaviour,1.0));
-  target = new PathTarget(path);
-  SeekBehaviour pathSeekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
-  behaviours.add(new WeightedBehaviour(pathSeekBehaviour,0.5));
-  behaviours.add(new WeightedBehaviour(separationBehaviour,2));
-
-  for (int i = 0; i < numBoids; i++) {
-    Boid v = new Boid(random(width), random(height), 5, behaviours);
-    boids.add(v);
-  }
+  int numBoids = DIAGNOSTIC_MODE ? DIAG_NUM_BOIDS : NUM_BOIDS;
+  flock = new Flock(numBoids, path);
 }
 
 void draw() {
   updatePath();
   resetBackground();
-  if (DRAW_PATH) path.display();
-  updateTheBoids();
+  flock.flap();
 }
 
 void resetBackground() {
@@ -56,17 +42,6 @@ void updatePath() {
   path.setPoints(points);
 }
 
-void updateTheBoids() {
-  for (Boid v : boids) {
-    v.applyBehaviours();
-    v.update();
-    if (DIAGNOSTIC_MODE) {
-      v.debugDisplay();
-    }
-    v.checkEdges();
-    v.display();
-  }
-}
 
 ArrayList<PVector> createTrack() {
   ArrayList<PVector> points = new ArrayList<PVector>();
