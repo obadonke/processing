@@ -5,9 +5,8 @@ class MouseTarget implements ITarget {
   }
 
   PVector getLocation(IBoid boid) {
-    PVector boidLocation = boid.getLocation();
     mouseLoc = new PVector(mouseX, mouseY);
-    return PVector.sub(mouseLoc, boidLocation);
+    return mouseLoc;
   }
 
   void display() {

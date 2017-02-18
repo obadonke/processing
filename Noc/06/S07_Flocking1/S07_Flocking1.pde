@@ -28,7 +28,7 @@ void setup() {
   // ITarget target = new PathTarget(path);
   ITarget target = new MouseTarget();
   SeekBehaviour seekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
-  behaviours.add(new WeightedBehaviour(seekBehaviour,1.5));
+  behaviours.add(new WeightedBehaviour(seekBehaviour,1.0));
   behaviours.add(new WeightedBehaviour(separationBehaviour,2));
 
   for (int i = 0; i < numBoids; i++) {
