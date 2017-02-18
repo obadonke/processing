@@ -46,6 +46,8 @@ class Boid implements IBoid {
     float totalWeight = 0;
     for (WeightedBehaviour wb: behaviours) {
       PVector force = wb.behaviour.getForce(this);
+      if (force == null) continue;
+
       force.sub(velocity);
       force.mult(wb.weight);
       totalWeight += wb.weight;

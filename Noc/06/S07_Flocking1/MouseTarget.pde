@@ -6,6 +6,10 @@ class MouseTarget implements ITarget {
 
   PVector getLocation(IBoid boid) {
     mouseLoc = new PVector(mouseX, mouseY);
+
+    if (boid.getLocation().dist(mouseLoc) > 150) {
+      return null;
+    }
     return mouseLoc;
   }
 

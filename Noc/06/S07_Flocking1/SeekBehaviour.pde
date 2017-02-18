@@ -16,6 +16,8 @@ class SeekBehaviour implements IBehaviour {
   }
 
   PVector calcSeekForce(IBoid boid, PVector target) {
+    if (target == null) return null;
+
     PVector location = boid.getLocation();
     PVector desired = PVector.sub(target, location);
 
