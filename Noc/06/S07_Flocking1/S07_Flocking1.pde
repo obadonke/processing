@@ -25,10 +25,12 @@ void setup() {
 
   updatePath();
   int numBoids = DIAGNOSTIC_MODE ? DIAG_NUM_VEHICLES : NUM_VEHICLES;
-  // ITarget target = new PathTarget(path);
   ITarget target = new MouseTarget();
   SeekBehaviour seekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
   behaviours.add(new WeightedBehaviour(seekBehaviour,1.0));
+  target = new PathTarget(path);
+  SeekBehaviour pathSeekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
+  behaviours.add(new WeightedBehaviour(pathSeekBehaviour,0.5));
   behaviours.add(new WeightedBehaviour(separationBehaviour,2));
 
   for (int i = 0; i < numBoids; i++) {
