@@ -4,6 +4,8 @@ static class BoidParams {
   static final float MAX_FORCE = 3;
   static final float MAX_SPEED = 5;
   static final float MAX_ACCELERATION = 0.4;
+  static final float ALMOST_ZERO = 0.0001;
+  static final float NEIGHBOUR_DIST = 100;
 }
 
 class Boid implements IBoid {

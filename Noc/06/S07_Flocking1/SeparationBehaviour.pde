@@ -1,5 +1,4 @@
 class SeparationBehaviour implements IBehaviour {
-  final float ALMOST_ZERO = 0.001;
   final float MIN_SEPARATION = 20;
   ArrayList<Boid> boids;
 
@@ -18,14 +17,14 @@ class SeparationBehaviour implements IBehaviour {
       PVector fleeVector = PVector.sub(refLocation, v.getLocation());
       float dist = fleeVector.mag();
 
-      if (dist > ALMOST_ZERO && dist < MIN_SEPARATION) {
+      if (dist > BoidParams.ALMOST_ZERO && dist < MIN_SEPARATION) {
         fleeVector.normalize();
         separationForce.add(fleeVector);
         numCloseBoids++;
       }
     }
 
-    if (numCloseBoids == 0) return separationForce;
+    if (numCloseBoids == 0) return null;
 
     separationForce.div(numCloseBoids);
     separationForce.setMag(boid.getMaxForce());

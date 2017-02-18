@@ -14,11 +14,14 @@ class Flock {
     behaviours.add(new WeightedBehaviour(pathSeekBehaviour,0.5));
 
     SeparationBehaviour separationBehaviour = new SeparationBehaviour(boids);
-    behaviours.add(new WeightedBehaviour(separationBehaviour,1));
+    behaviours.add(new WeightedBehaviour(separationBehaviour,2));
 
     AlignBehaviour align = new AlignBehaviour(boids);
     behaviours.add(new WeightedBehaviour(align, 1));
        
+    CohesionBehaviour cohesion = new CohesionBehaviour(boids, BoidParams.MAX_SPEED);
+    behaviours.add(new WeightedBehaviour(cohesion, 0.3));
+
     for (int i = 0; i < numBoids; i++) {
       Boid v = new Boid(random(width), random(height), 5, behaviours);
       boids.add(v);
