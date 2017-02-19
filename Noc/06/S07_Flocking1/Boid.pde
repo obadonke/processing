@@ -51,8 +51,9 @@ class Boid implements IBoid {
       if (force == null) continue;
 
       force.sub(velocity);
-      force.mult(wb.weight);
-      totalWeight += wb.weight;
+      float weight = wb.getWeight();
+      force.mult(weight);
+      totalWeight += weight;
       resultantForce.add(force);
     }
     

@@ -8,19 +8,19 @@ class Flock {
 
     ITarget target = new WanderTarget();
     SeekBehaviour seekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
-    behaviours.add(new WeightedBehaviour(seekBehaviour,2));
+    behaviours.add(new WeightedBehaviour(seekBehaviour, new SineFactor(580, 1, 5)));
     target = new PathTarget(path);
     SeekBehaviour pathSeekBehaviour = new SeekBehaviour(target, BoidParams.MAX_SPEED);
-    behaviours.add(new WeightedBehaviour(pathSeekBehaviour,0.5));
+    behaviours.add(new WeightedBehaviour(pathSeekBehaviour, new SineFactor(1080, -0.5, 2)));
 
     SeparationBehaviour separationBehaviour = new SeparationBehaviour(boids);
-    behaviours.add(new WeightedBehaviour(separationBehaviour,2));
+    behaviours.add(new WeightedBehaviour(separationBehaviour, new SineFactor(100, 0.5, 2)));
 
     AlignBehaviour align = new AlignBehaviour(boids);
-    behaviours.add(new WeightedBehaviour(align, 1));
+    behaviours.add(new WeightedBehaviour(align, new ConstantFactor(1)));
        
     CohesionBehaviour cohesion = new CohesionBehaviour(boids, BoidParams.MAX_SPEED);
-    behaviours.add(new WeightedBehaviour(cohesion, 0.3));
+    behaviours.add(new WeightedBehaviour(cohesion, new SineFactor(720, -0.1, 1)));
 
     for (int i = 0; i < numBoids; i++) {
       Boid v = new Boid(random(width), random(height), 5, behaviours);
@@ -42,4 +42,3 @@ class Flock {
     }
   }
 }
-
