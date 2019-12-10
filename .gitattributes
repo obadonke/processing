@@ -1,5 +1,10 @@
 *.pde text=auto
 
+# binary files
+*.mp3 binary
+*.png binary
+*.jpg binary
+
 
 *.py text=auto
 
